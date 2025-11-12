@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - BRIEF-CASE</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #737373 0%, #b8a6a6 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .signup-container {
+      background: #c5c5c5;
+      border: 2px solid #000;
+      max-width: 430px;
+      width: 100%;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .header {
+      background: #6b7280;
+      padding: 20px 25px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 2px solid #000;
+    }
+
+    .logo {
+      width: 70px;
+      height: 90px;
+      flex-shrink: 0;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .brand {
+      flex: 1;
+    }
+
+    .brand h1 {
+      font-size: 26px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand p {
+      font-size: 13px;
+      color: #7a1a31;
+      font-weight: 500;
+      font-style: italic;
+    }
+
+    .signup-form {
+      padding: 40px;
+    }
+
+    .signup-form h2 {
+      font-size: 22px;
+      font-weight: bold;
+      color: #2d3748;
+      margin-bottom: 35px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: #7a1a31;
+      margin-bottom: 6px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid #999;
+      padding: 10px 12px;
+    }
+
+    .input-icon {
+      font-size: 18px;
+      color: #4a4a4a;
+      margin-right: 12px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .form-group input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      color: #333;
+      background: transparent;
+    }
+
+    .form-group input::placeholder {
+      color: #777;
+    }
+
+    /* Account Type Buttons */
+    .account-type {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .type-btn {
+      flex: 1;
+      border: 1px solid #999;
+      background: #9ca3af;
+      color: #000;
+      font-weight: 600;
+      padding: 12px 0;
+      cursor: pointer;
+      transition: 0.3s;
+      border-radius: 5px;
+    }
+
+    .type-btn:hover {
+      background: #7a1a31;
+      color: #fff;
+    }
+
+    .type-btn.active {
+      background: #7a1a31;
+      color: #fff;
+      border-color: #7a1a31;
+    }
+
+    .signup-btn {
+      width: 100%;
+      background: #7a1a31;
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    .signup-btn:hover {
+      background: #5d1425;
+    }
+
+    .login-text {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 14px;
+      color: #4a4a4a;
+    }
+
+    .login-text a {
+      color: #7a1a31;
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 5px;
+    }
+
+    .login-text a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 500px) {
+      .signup-form {
+        padding: 30px;
+      }
+      .signup-form h2 {
+        text-align: center;
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <div class="header">
+      <div class="logo">
+        <img src="file:///C:/Users/HP/OneDrive/Desktop/finalized%20wireframes/Brief-Case%20Logo.png" alt="Brief-Case Logo">
+      </div>
+      <div class="brand">
+        <h1>BRIEF-CASE</h1>
+        <p>Your Case, Our Counsel</p>
+      </div>
+    </div>
+
+    <div class="signup-form">
+      <h2>Create Your Account</h2>
+
+      <form>
+        <div class="form-group">
+          <label for="fullname">Full Name</label>
+          <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input type="text" id="fullname" placeholder="Enter your full name" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <div class="input-wrapper">
+            <span class="input-icon">📧</span>
+            <input type="email" id="email" placeholder="Enter your email address" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="password" placeholder="••••••••••" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🗝️</span>
+            <input type="password" id="confirm-password" placeholder="••••••••••" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Account Type</label>
+          <div class="account-type">
+            <button type="button" class="type-btn" id="userBtn">User</button>
+            <button type="button" class="type-btn" id="lawyerBtn">Lawyer</button>
+          </div>
+          <input type="hidden" name="accountType" id="accountType" value="">
+        </div>
+
+        <div class="form-group">
+          <label for="cnic">CNIC</label>
+          <div class="input-wrapper">
+            <span class="input-icon">💳</span>
+            <input type="text" id="cnic" placeholder="Enter your CNIC number" required>
+          </div>
+        </div>
+
+        <button type="submit" class="signup-btn">Sign Up</button>
+
+        <div class="login-text">
+          Already have an account?
+          <a href="#">Log in</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const userBtn = document.getElementById("userBtn");
+    const lawyerBtn = document.getElementById("lawyerBtn");
+    const accountTypeInput = document.getElementById("accountType");
+
+    userBtn.addEventListener("click", () => {
+      userBtn.classList.add("active");
+      lawyerBtn.classList.remove("active");
+      accountTypeInput.value = "User";
+    });
+
+    lawyerBtn.addEventListener("click", () => {
+      lawyerBtn.classList.add("active");
+      userBtn.classList.remove("active");
+      accountTypeInput.value = "Lawyer";
+    });
+  </script>
+</body>
+</html>
