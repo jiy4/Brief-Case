@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amelia Ibrahim - Lawyer Profile | Brief-Case</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #3a3d4a;
+            padding: 10px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .donate-btn {
+            background-color: #8b2e3c;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+          .logo {
+            width: 70px;
+            height: 60px;
+           
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text h1 {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .brand-text p {
+            color: #b0b0b0;
+            font-size: 12px;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            background: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 150px;
+        }
+
+        .lang-icon {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Sub Header */
+        .sub-header {
+            background-color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .back-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .back-arrow {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #3a3d4a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .profile-container {
+            background: linear-gradient(135deg, #c4c4c4 0%, #a8a8a8 100%);
+            padding: 50px;
+            min-height: calc(100vh - 140px);
+        }
+
+        .profile-header {
+            display: grid;
+            grid-template-columns: 250px 1fr auto;
+            gap: 30px;
+            margin-bottom: 40px;
+            align-items: start;
+        }
+
+        .profile-image {
+            width: 250px;
+            height: 330px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info h2 {
+            font-size: 32px;
+            color: #2c2c2c;
+            margin-bottom: 10px;
+        }
+
+        .profile-email {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .info-boxes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .info-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h4 {
+            color: #3a3d4a;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-book {
+            background-color: #8b2e3c;
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .btn-message {
+            background-color: transparent;
+            color: #8b2e3c;
+            padding: 12px 40px;
+            border: 2px solid #8b2e3c;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Biography Section */
+        .biography-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .biography-section h3 {
+            color: #3a3d4a;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .biography-section p {
+            color: #444;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        /* Bottom Sections */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .section-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-card h3 {
+            color: #3a3d4a;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .achievement-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            align-items: start;
+        }
+
+        .achievement-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #e8e8e8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .achievement-icon img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+        .achievement-text h4 {
+            color: #2c2c2c;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .achievement-text p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .detail-item {
+            margin-bottom: 20px;
+        }
+
+        .detail-item h4 {
+            color: #3a3d4a;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .detail-item p {
+            color: #555;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .location-icon {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .rating-stars {
+            color: #ffd700;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .rating-text {
+            color: #555;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <button class="donate-btn">Donate</button>
+        <div class="logo-section">
+            <div class="logo">
+                <img src="file:///C:/Users/HP/OneDrive/Desktop/finalized%20wireframes/Brief-Case%20Logo.png" alt="Brief-Case Logo">
+            </div>
+            <div class="brand-text">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div class="top-right">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="Search">
+            </div>
+            <span class="lang-icon">🌐</span>
+        </div>
+    </div>
+
+    <!-- Sub Header -->
+    <div class="sub-header">
+        <div class="back-section">
+            <span class="back-arrow">←</span>
+            <span>Lawyer Profile</span>
+        </div>
+        <div class="profile-icon">👤</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-image">
+                <!-- Paste the lawyer's image URL below -->
+                <img src="https://example.com/images/your-lawyer-photo.jpg" alt="Amelia Ibrahim">
+            </div>
+
+            <div class="profile-info">
+                <h2>Amelia Ibrahim</h2>
+                <p class="profile-email">Amelia.Ibrahim@Brief-Case.com</p>
+
+                <div class="info-boxes">
+                    <div class="info-box">
+                        <h4>Specialization</h4>
+                        <p>Corporate Law, Intellectual Property.</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Years of Experience</h4>
+                        <p>8 years</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-book">Book Appointment</button>
+                <button class="btn-message">Message</button>
+            </div>
+        </div>
+
+        <!-- Biography -->
+        <div class="biography-section">
+            <h3>Biography</h3>
+            <p>Amelia Ibrahim is an internationally trained corporate attorney with 8 years of experience in corporate law and intellectual property. A graduate of one of the world's top universities, she has represented leading corporations and startups across Pakistan, the Middle East, and the United States. Her expertise spans mergers and acquisitions, technology licensing, trademark protection, and cross-border regulatory compliance. Combining a strong foundation in international commercial law with strategic insight, Amelia delivers practical, business-oriented legal solutions and has contributed to global legal conferences and research on intellectual property innovation in developing economies.</p>
+        </div>
+
+        <!-- Bottom Grid -->
+        <div class="bottom-grid">
+            <!-- Left Column -->
+            <div class="section-card">
+                <h3>Certifications & Achievements</h3>
+
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect fill='%233a5a8c' width='60' height='60' rx='4'/%3E%3Ctext x='50%25' y='50%25' font-size='12' text-anchor='middle' dy='.3em' fill='white' font-weight='bold'%3EOXFORD%3C/text%3E%3C/svg%3E" alt="Oxford">
+                    </div>
+                    <div class="achievement-text">
+                        <h4>LL.M., Corporate & Commercial Law –</h4>
+                        <p>University of Oxford</p>
+                    </div>
+                </div>
+
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect fill='%23e8e8e8' width='60' height='60' rx='4'/%3E%3Ctext x='50%25' y='50%25' font-size='10' text-anchor='middle' dy='.3em' fill='%23555' font-weight='bold'%3EWIPO%3C/text%3E%3C/svg%3E" alt="WIPO">
+                    </div>
+                    <div class="achievement-text">
+                        <h4>Certified in Intellectual Property Law –</h4>
+                        <p>World Intellectual Property Organization (WIPO)</p>
+                    </div>
+                </div>
+
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect fill='%23f4f4f4' width='60' height='60' rx='4'/%3E%3Ctext x='50%25' y='50%25' font-size='24' text-anchor='middle' dy='.3em'%3E🏆%3C/text%3E%3C/svg%3E" alt="Award">
+                    </div>
+                    <div class="achievement-text">
+                        <h4>Recognized among Top 50 Women in Law, 2024</h4>
+                        <p>(Asia Business Review)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="section-card">
+                <div class="detail-item">
+                    <h4>Available Locations</h4>
+                    <p><span class="location-icon">📍</span> Karachi | Islamabad | Chicago, IL (virtual consultations)</p>
+                </div>
+
+                <div class="detail-item">
+                    <h4>Office Hours</h4>
+                    <p>9.00 a.m. to 6.00 p.m.</p>
+                </div>
+
+                <div class="detail-item">
+                    <h4>Consultation Fees</h4>
+                    <p>PKR 45,000/hour | Initial consultation complimentary</p>
+                </div>
+
+                <div class="detail-item">
+                    <h4>Client Ratings</h4>
+                    <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="rating-text">4.9/5 (172 reviews)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
