@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BRIEF-CASE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(180deg, #737373 0%, #b8a6a6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: #c5c5c5;
+            border: 2px solid #000;
+            max-width: 430px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            background: #6b7280;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 2px solid #000;
+        }
+
+        .logo {
+            width: 70px;
+            height: 90px;
+            flex-shrink: 0;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .brand {
+            flex: 1;
+        }
+
+        .brand h1 {
+            font-size: 26px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
+        }
+
+        .brand p {
+            font-size: 13px;
+            color: #7a1a31;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .login-form {
+            padding: 50px 40px 40px;
+        }
+
+        .welcome-text {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 18px;
+            font-weight: 600;
+            color: #7a1a31;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #999;
+            padding: 10px 12px;
+        }
+
+        .input-icon {
+            font-size: 18px;
+            color: #4a4a4a;
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .form-group input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: #333;
+            background: transparent;
+        }
+
+        .form-group input::placeholder {
+            color: #777;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 8px;
+        }
+
+        .forgot-password a {
+            color: #7a1a31;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #7a1a31;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 35px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #5d1425;
+        }
+
+        .signup-text {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+            color: #4a4a4a;
+        }
+
+        .signup-text a {
+            color: #7a1a31;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .signup-text a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 500px) {
+            .login-container {
+                border-width: 2px;
+            }
+
+            .header {
+                padding: 18px 20px;
+            }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .login-form {
+                padding: 35px 28px 30px;
+            }
+
+            .welcome-text {
+                font-size: 28px;
+                margin-bottom: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="header">
+            <div class="logo">
+               <img src="file:///C:/Users/HP/OneDrive/Desktop/finalized%20wireframes/Brief-Case%20Logo.png" alt="Brief-Case Logo">
+            </div>
+            <div class="brand">
+                <h1>BRIEF-CASE</h1>
+                <p>Your Case, Our Counsel</p>
+            </div>
+        </div>
+
+        <div class="login-form">
+            <h2 class="welcome-text">Hello again!</h2>
+            
+            <form>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔑</span>
+                        <input type="password" id="password" placeholder="••••••••••" required>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="#">Forgot Password?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn">Login</button>
+
+                <div class="signup-text">
+                    Don't have an account?<a href="#">Sign up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
