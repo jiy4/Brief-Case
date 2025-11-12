@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Lawyers - Brief Case</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b8b8b8;
+        }
+
+        /* Header */
+        header {
+            background-color: #3d4654;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .donate-btn {
+            background-color: #7d2e3f;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+        }
+
+        .logo-text h1 {
+            color: white;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .logo-text p {
+            color: #9a9a9a;
+            font-size: 11px;
+            margin: 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-box {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .translate-icon, .user-icon {
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Page Header */
+        .page-header {
+            background-color: #e8e8e8;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-arrow {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .page-header h2 {
+            font-size: 20px;
+            font-weight: normal;
+        }
+
+        .user-icon-page {
+            width: 32px;
+            height: 32px;
+            background-color: white;
+            border-radius: 50%;
+            border: 2px solid #3d4654;
+        }
+
+        /* Main Content */
+        main {
+            padding: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .search-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .main-search {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px 15px;
+            border: 1px solid #666;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Filter Dropdowns */
+        .filters {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-dropdown {
+            background-color: #7d2e3f;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 150px;
+            appearance: none;
+            position: relative;
+        }
+
+        /* Lawyer Cards */
+        .lawyer-card {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lawyer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lawyer-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+
+        .lawyer-details h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .lawyer-details p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .stars {
+            color: #ffc107;
+            font-size: 14px;
+        }
+
+        .view-profile-btn {
+            background-color: #7d2e3f;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .view-profile-btn:hover {
+            background-color: #5d1e2f;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="donate-btn">Donate</button>
+        <div class="logo-container">
+            <div class="logo"></div>
+            <div class="logo-text">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <input type="text" class="search-box" placeholder="🔍">
+            <div class="translate-icon"></div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="back-title">
+            <span class="back-arrow">←</span>
+            <h2>Search Lawyers</h2>
+        </div>
+        <div class="user-icon-page"></div>
+    </div>
+
+    <main>
+        <div class="search-section">
+            <input type="text" class="main-search" placeholder="🔍 Search lawyers...">
+        </div>
+
+        <div class="filters">
+            <select class="filter-dropdown">
+                <option>Rating</option>
+            </select>
+            <select class="filter-dropdown">
+                <option>Location</option>
+            </select>
+            <select class="filter-dropdown">
+                <option>Specialty</option>
+            </select>
+            <select class="filter-dropdown">
+                <option>Rate</option>
+            </select>
+        </div>
+
+        <div class="lawyer-card">
+            <div class="lawyer-info">
+                <div class="lawyer-avatar"></div>
+                <div class="lawyer-details">
+                    <h3>Mahaad Akbar</h3>
+                    <p>Criminal Defense</p>
+                    <div class="stars">★★★★★</div>
+                </div>
+            </div>
+            <button class="view-profile-btn">View Profile</button>
+        </div>
+
+        <div class="lawyer-card">
+            <div class="lawyer-info">
+                <div class="lawyer-avatar"></div>
+                <div class="lawyer-details">
+                    <h3>Jiya Lal</h3>
+                    <p>Corporate</p>
+                    <div class="stars">★★★★★</div>
+                </div>
+            </div>
+            <button class="view-profile-btn">View Profile</button>
+        </div>
+
+        <div class="lawyer-card">
+            <div class="lawyer-info">
+                <div class="lawyer-avatar"></div>
+                <div class="lawyer-details">
+                    <h3>Saniya Raza</h3>
+                    <p>Family Law</p>
+                    <div class="stars">★★★★★</div>
+                </div>
+            </div>
+            <button class="view-profile-btn">View Profile</button>
+        </div>
+
+        <div class="lawyer-card">
+            <div class="lawyer-info">
+                <div class="lawyer-avatar"></div>
+                <div class="lawyer-details">
+                    <h3>Amelia Ibrahim</h3>
+                    <p>Corporate Law</p>
+                    <div class="stars">★★★★★</div>
+                </div>
+            </div>
+            <button class="view-profile-btn">View Profile</button>
+        </div>
+
+        <div class="lawyer-card">
+            <div class="lawyer-info">
+                <div class="lawyer-avatar"></div>
+                <div class="lawyer-details">
+                    <h3>Preet Mahesh</h3>
+                    <p>Personal Injury</p>
+                    <div class="stars">★★★★★</div>
+                </div>
+            </div>
+            <button class="view-profile-btn">View Profile</button>
+        </div>
+
+        <div class="lawyer-card">
+            <div class="lawyer-info">
+                <div class="lawyer-avatar"></div>
+                <div class="lawyer-details">
+                    <h3>Ibad</h3>
+                    <p>Personal Injury</p>
+                    <div class="stars">★★★★☆</div>
+                </div>
+            </div>
+            <button class="view-profile-btn">View Profile</button>
+        </div>
+    </main>
+</body>
+</html>

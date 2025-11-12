@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lawyer Profile Setting - Brief Case</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b8b8b8;
+        }
+
+        /* Header */
+        header {
+            background-color: #3d4654;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .donate-btn {
+            background-color: #7d2e3f;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+        }
+
+        .logo-text h1 {
+            color: white;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .logo-text p {
+            color: #9a9a9a;
+            font-size: 11px;
+            margin: 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-box {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .translate-icon {
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Page Header */
+        .page-header {
+            background-color: #e8e8e8;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-arrow {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .page-header h2 {
+            font-size: 20px;
+            font-weight: normal;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .notification-icon, .user-icon {
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        main {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Cards */
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            display: flex;
+            gap: 30px;
+        }
+
+        .profile-left {
+            flex-shrink: 0;
+        }
+
+        .profile-photo {
+            width: 140px;
+            height: 140px;
+            border-radius: 8px;
+            background-color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        .btn-upload {
+            background-color: #7d2e3f;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .profile-form {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-size: 14px;
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Practice Areas */
+        .practice-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            background-color: #7d2e3f;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .btn-add {
+            background-color: #7d2e3f;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* Consultation Details */
+        .consultation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .radio-group, .payment-group, .currency-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .radio-btn, .payment-btn, .currency-btn {
+            padding: 8px 20px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            background-color: white;
+        }
+
+        .radio-btn.selected, .payment-btn.selected, .currency-btn.selected {
+            background-color: #7d2e3f;
+            color: white;
+            border-color: #7d2e3f;
+        }
+
+        /* Document Management */
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .document-item {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid #666;
+            background-color: white;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .document-item h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .document-item p {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .btn-download {
+            background-color: white;
+            border: 1px solid #666;
+            padding: 6px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+        }
+
+        .upload-document {
+            border: 2px dashed #ddd;
+            border-radius: 6px;
+            padding: 30px 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+        }
+
+        .btn-browse {
+            background-color: #7d2e3f;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* Calendar */
+        .calendar {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            background-color: #7d2e3f;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-nav {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .calendar-body {
+            padding: 15px;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .day-header {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 5px;
+        }
+
+        .day {
+            padding: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .day:hover {
+            background-color: #f0f0f0;
+        }
+
+        .btn-update-availability {
+            background-color: #7d2e3f;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        /* Upcoming Meetings */
+        .upcoming-meetings {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .upcoming-meetings h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .meeting-item {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .meeting-date {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .meeting-time {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .meeting-title {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .btn-schedule {
+            background-color: #7d2e3f;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="donate-btn">Donate</button>
+        <div class="logo-container">
+            <div class="logo"></div>
+            <div class="logo-text">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <input type="text" class="search-box" placeholder="🔍">
+            <div class="translate-icon"></div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="back-title">
+            <span class="back-arrow">←</span>
+            <h2>Lawyer Profile Setting</h2>
+        </div>
+        <div class="header-icons">
+            <div class="notification-icon">🔔</div>
+            <div class="user-icon">👤</div>
+        </div>
+    </div>
+
+    <main>
+        <div class="left-column">
+            <div class="card">
+                <h3>Profile</h3>
+                <div class="profile-section">
+                    <div class="profile-left">
+                        <div class="profile-photo"></div>
+                        <button class="btn-upload">Upload Photo</button>
+                    </div>
+                    <div class="profile-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" value="Rachel">
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" value="Zane">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email">
+                        </div>
+                        <div class="form-group">
+                            <label>Law Firm</label>
+                            <input type="text">
+                        </div>
+                        <div class="form-group">
+                            <label>Bar Reg No</label>
+                            <input type="text">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone No</label>
+                            <input type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Biography</label>
+                    <textarea></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Education & Qualifications</label>
+                    <textarea></textarea>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="card">
+                    <h3>Practice Areas</h3>
+                    <div class="practice-tags">
+                        <div class="tag">Criminal Defense</div>
+                        <div class="tag">Appeals</div>
+                        <div class="tag">Family Law</div>
+                        <button class="btn-add">+ Add</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Consultation Details</h3>
+                    <div class="form-group">
+                        <label>Consultation Fee</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Consultation Type</label>
+                        <div class="radio-group">
+                            <button class="radio-btn selected">In-person</button>
+                            <button class="radio-btn">Online</button>
+                            <button class="radio-btn">Both</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <div class="payment-group">
+                            <button class="payment-btn">💳</button>
+                            <button class="payment-btn">💵</button>
+                            <button class="payment-btn">P</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <div class="currency-group">
+                            <button class="currency-btn">USD</button>
+                            <button class="currency-btn">PAR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Document Management</h3>
+                <div class="documents-grid">
+                    <div class="document-item">
+                        <div class="close-btn">✕</div>
+                        <h4>Contract</h4>
+                        <p>Uploaded: May 2, 2025</p>
+                        <button class="btn-download">⬇ Downlo</button>
+                    </div>
+                    <div class="document-item">
+                        <div class="close-btn">✕</div>
+                        <h4>Bar License</h4>
+                        <p>Uploaded: Apr 8, 2025</p>
+                        <button class="btn-download">⬇ Downlo</button>
+                    </div>
+                    <div class="upload-document">
+                        <div class="upload-icon">☁️</div>
+                        <p>Upload New</p>
+                        <button class="btn-browse">Browse Files</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="calendar">
+                <div class="calendar-header">
+                    <button class="calendar-nav">‹</button>
+                    <span>October 2025</span>
+                    <button class="calendar-nav">›</button>
+                </div>
+                <div class="calendar-body">
+                    <div class="calendar-days">
+                        <div class="day-header">Mo</div>
+                        <div class="day-header">Tu</div>
+                        <div class="day-header">We</div>
+                        <div class="day-header">Th</div>
+                        <div class="day-header">Fr</div>
+                        <div class="day-header">Sa</div>
+                        <div class="day-header">Su</div>
+                        
+                        <div class="day"></div>
+                        <div class="day"></div>
+                        <div class="day">1</div>
+                        <div class="day">2</div>
+                        <div class="day">3</div>
+                        <div class="day">4</div>
+                        <div class="day">5</div>
+                        <div class="day">6</div>
+                        <div class="day">7</div>
+                        <div class="day">8</div>
+                        <div class="day">9</div>
+                        <div class="day">10</div>
+                        <div class="day">11</div>
+                        <div class="day">12</div>
+                        <div class="day">13</div>
+                        <div class="day">14</div>
+                        <div class="day">15</div>
+                        <div class="day">16</div>
+                        <div class="day">17</div>
+                        <div class="day">18</div>
+                        <div class="day">19</div>
+                        <div class="day">20</div>
+                        <div class="day">21</div>
+                        <div class="day">22</div>
+                        <div class="day">23</div>
+                        <div class="day">24</div>
+                        <div class="day">25</div>
+                        <div class="day">26</div>
+                        <div class="day">27</div>
+                        <div class="day">28</div>
+                        <div class="day">29</div>
+                        <div class="day">30</div>
+                        <div class="day">31</div>
+                    </div>
+                    <button class="btn-update-availability">Update Availability</button>
+                </div>
+            </div>
+
+            <div class="upcoming-meetings">
+                <h3>Upcoming Meetings</h3>
+                <div class="meeting-item">
+                    <div class="meeting-date">Oct 11, 2025 •</div>
+                    <div class="meeting-date">Oct 18, 2025 •</div>
+                    <div class="meeting-time">🕐 4:00 PM</div>
+                    <div class="meeting-title">Weekly case review</div>
+                </div>
+                <button class="btn-schedule">Schedule New Meeting</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
