@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - BRIEF-CASE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #9a9a9a;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #3a3d4a;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #2a2c35;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .donate-btn {
+            background: #7a1a31;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo-nav {
+            width: 60px;
+            height: 50px;
+        }
+
+        .logo-nav img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-nav h1 {
+            font-size: 18px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .brand-nav p {
+            font-size: 11px;
+            color: #ccc;
+            font-style: italic;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-icon-nav {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+       .search-box {
+    background: white;
+    border-radius: 20px;
+    padding: 6px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;              /* FIX */
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    font-size: 13px;
+    flex: 1;
+}
+
+        .translate-icon {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 18px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-arrow {
+            font-size: 20px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .user-icon {
+            font-size: 32px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: calc(100vh - 150px);
+        }
+
+        .payment-container {
+            background: #b8b8b8;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .payment-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .payment-method {
+            background: #d4d4d4;
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover {
+            border-color: #7a1a31;
+            background: #e0e0e0;
+        }
+
+        .payment-method.selected {
+            border-color: #7a1a31;
+            background: #e8d0d6;
+        }
+
+        .payment-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .payment-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        /* Amount Section */
+        .amount-section {
+            margin-bottom: 30px;
+        }
+
+        .amount-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .amount-display {
+            background: #d4d4d4;
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 18px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        /* Transaction Summary */
+        .transaction-summary {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .summary-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #333;
+        }
+
+        .summary-value {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .total-row {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #333;
+            font-weight: bold;
+        }
+
+        .total-row .summary-label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .total-row .summary-value {
+            font-size: 16px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .btn-confirm {
+            background: #7a1a31;
+            color: white;
+            border-color: #7a1a31;
+        }
+
+        .btn-confirm:hover {
+            background: #5d1425;
+        }
+
+        .btn-download {
+            background: #d4d4d4;
+            color: #7a1a31;
+            border-color: #7a1a31;
+        }
+
+        .btn-download:hover {
+            background: #e0e0e0;
+        }
+
+        /* Security Notice */
+        .security-notice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #1a1a1a;
+        }
+
+        .security-icon {
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-left">
+            <button class="donate-btn">Donate</button>
+        </div>
+        <div class="nav-center">
+            <div class="logo-nav">
+                 <img src="file:///C:/Users/HP/OneDrive/Desktop/finalized%20wireframes/Brief-Case%20Logo.png" alt="Brief-Case Logo">
+            </div>
+            <div class="brand-nav">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="user-icon-nav">👤</div>
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="">
+            </div>
+            <span class="translate-icon">🌐</span>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-left">
+            <span class="back-arrow">←</span>
+            <h1 class="page-title">Payment</h1>
+        </div>
+        <span class="user-icon">👤</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="payment-container">
+            <h2 class="payment-title">Select Payment Method</h2>
+
+            <!-- Payment Methods -->
+            <div class="payment-methods">
+                <div class="payment-method selected">
+                    <div class="payment-icon">💳</div>
+                    <div class="payment-label">Credit/Debit Card</div>
+                </div>
+                <div class="payment-method">
+                    <div class="payment-icon">🏛️</div>
+                    <div class="payment-label">Bank Transfer</div>
+                </div>
+                <div class="payment-method">
+                    <div class="payment-icon">🅿️</div>
+                    <div class="payment-label">PayPak</div>
+                </div>
+            </div>
+
+            <!-- Amount to Pay -->
+            <div class="amount-section">
+                <div class="amount-label">Amount to Pay</div>
+                <div class="amount-display">Rs. 12000.00</div>
+            </div>
+
+            <!-- Transaction Summary -->
+            <div class="transaction-summary">
+                <h3 class="summary-title">Transaction Summary</h3>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Lawyer Name:</span>
+                    <span class="summary-value">Saul Goodman</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Service Type:</span>
+                    <span class="summary-value">Contract Review</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Consultation Fee:</span>
+                    <span class="summary-value">Rs. 5000.00</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Service Fee:</span>
+                    <span class="summary-value">Rs. 7000.00</span>
+                </div>
+                
+                <div class="summary-row total-row">
+                    <span class="summary-label">Total:</span>
+                    <span class="summary-value">Rs. 12000.00</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-confirm">Confirm Payment</button>
+                <button class="btn btn-download">Download Receipt</button>
+            </div>
+
+            <!-- Security Notice -->
+            <div class="security-notice">
+                <span class="security-icon">🛡️</span>
+                <span>Secure Payment Processing</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Payment method selection
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        
+        paymentMethods.forEach(method => {
+            method.addEventListener('click', function() {
+                // Remove selected class from all methods
+                paymentMethods.forEach(m => m.classList.remove('selected'));
+                // Add selected class to clicked method
+                this.classList.add('selected');
+            });
+        });
+
+        // Confirm Payment button
+        const confirmBtn = document.querySelector('.btn-confirm');
+        confirmBtn.addEventListener('click', function() {
+            const selectedMethod = document.querySelector('.payment-method.selected .payment-label').textContent;
+            alert(`Processing payment of Rs. 12000.00 via ${selectedMethod}...`);
+        });
+
+        // Download Receipt button
+        const downloadBtn = document.querySelector('.btn-download');
+        downloadBtn.addEventListener('click', function() {
+            alert('Downloading receipt...');
+        });
+
+        // Back arrow
+        const backArrow = document.querySelector('.back-arrow');
+        backArrow.addEventListener('click', function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>
