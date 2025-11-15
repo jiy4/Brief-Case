@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - BRIEF-CASE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #3a3d4a;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #2a2c35;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .donate-btn {
+            background: #7a1a31;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo-nav {
+            width: 60px;
+            height: 50px;
+        }
+
+        .logo-nav img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-nav h1 {
+            font-size: 18px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .brand-nav p {
+            font-size: 11px;
+            color: #ccc;
+            font-style: italic;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 20px;
+            padding: 6px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            font-size: 13px;
+            width: 150px;
+        }
+
+        .translate-icon {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #7a1a31;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #5d1425;
+        }
+
+        .sidebar-header {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .back-arrow {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .search-conversations {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .search-conversations input {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .conversations-list {
+            flex: 1;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .conversation-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .conversation-item:hover {
+            background: rgba(165, 114, 131, 0.1);
+        }
+
+        .conversation-item.active {
+            background: rgba(165, 114, 131, 0.2);
+        }
+
+        .conversation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .conversation-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .conversation-time {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .conversation-preview {
+            font-size: 13px;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background: #7a1a31;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #e8e8e8;
+        }
+
+        .chat-header {
+            background: #5d1425;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            border-bottom: 2px solid #8b5d6e;
+        }
+
+        .chat-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-avatar {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
+        }
+
+        .chat-user-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .chat-user-details p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 20px;
+        }
+
+        .chat-action-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Messages Container */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 70%;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            background: #999;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #666;
+        }
+
+        .message.sent .message-avatar {
+            background: #4a90e2;
+            border-color: #3a7bc8;
+        }
+
+        .message-content {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.sent .message-content {
+            background: #d4e8f7;
+        }
+
+        .message-text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 5px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .file-attachment {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f5f5f5;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .file-icon {
+            font-size: 24px;
+            color: #7a1a31;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .file-size {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .file-download {
+            cursor: pointer;
+            font-size: 18px;
+            color: #666;
+        }
+
+        /* Message Input */
+        .message-input-container {
+            padding: 20px 25px;
+            background: #d8d8d8;
+            border-top: 2px solid #c0c0c0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .attach-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+            transform: rotate(-45deg);
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1px solid #bbb;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+        }
+
+        .send-btn {
+            background: #7a1a31;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 25px;
+        }
+
+        .send-btn:hover {
+            background: #5d1425;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: absolute;
+                z-index: 10;
+                height: 100%;
+            }
+
+            .chat-area {
+                width: 100%;
+            }
+
+            .nav-center {
+                position: static;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-left">
+            <button class="donate-btn">Donate</button>
+        </div>
+        <div class="nav-center">
+            <div class="logo-nav">
+                 <img src="file:///C:/Users/HP/OneDrive/Desktop/finalized%20wireframes/Brief-Case%20Logo.png" alt="Brief-Case Logo">
+            </div>
+            <div class="brand-nav">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="">
+            </div>
+            <span class="translate-icon">🌐</span>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <span class="back-arrow">←</span>
+                <h2>Messages</h2>
+            </div>
+            <div class="search-conversations">
+                <input type="text" placeholder="🔍 Search conversations...">
+            </div>
+            <div class="conversations-list">
+                <div class="conversation-item active">
+                    <div class="conversation-header">
+                        <span class="conversation-name">Sana Asim</span>
+                        <span class="conversation-time">2:45 PM</span>
+                    </div>
+                    <div class="conversation-preview">I need help with my contract dispute...</div>
+                </div>
+                <div class="conversation-item">
+                    <div class="conversation-header">
+                        <span class="conversation-name"><span class="status-indicator"></span>Ibrahim Ali</span>
+                        <span class="conversation-time">Yesterday</span>
+                    </div>
+                    <div class="conversation-preview">Thank you for your advice on the...</div>
+                </div>
+                <div class="conversation-item">
+                    <div class="conversation-header">
+                        <span class="conversation-name">Amar</span>
+                        <span class="conversation-time">May 12</span>
+                    </div>
+                    <div class="conversation-preview">Can we schedule a meeting next week?</div>
+                </div>
+                <div class="conversation-item">
+                    <div class="conversation-header">
+                        <span class="conversation-name"><span class="status-indicator"></span>Josh Ayan</span>
+                        <span class="conversation-time">May 10</span>
+                    </div>
+                    <div class="conversation-preview">The documents you requested are...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <div class="chat-user-info">
+                    <div class="chat-avatar">👤</div>
+                    <div class="chat-user-details">
+                        <h3>Sana Asim</h3>
+                        <p>Online · Last seen 5 minutes ago</p>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button class="chat-action-btn">📞</button>
+                    <button class="chat-action-btn">📹</button>
+                    <button class="chat-action-btn">ℹ️</button>
+                </div>
+            </div>
+
+            <div class="messages-container">
+                <div class="message">
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        <div class="message-text">Hello, I'm interested in your legal services for a contract dispute. Can you help me?</div>
+                        <div class="message-time">2:30 PM</div>
+                    </div>
+                </div>
+
+                <div class="message sent">
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        <div class="message-text">Yes, I can assist you with that. Could you please provide more details about your case?</div>
+                        <div class="message-time">2:32 PM</div>
+                    </div>
+                </div>
+
+                <div class="message">
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        <div class="message-text">Sure, I've attached the initial contract for your review.</div>
+                        <div class="file-attachment">
+                            <span class="file-icon">📄</span>
+                            <div class="file-info">
+                                <div class="file-name">contract_agreement.pdf</div>
+                                <div class="file-size">1.2 MB</div>
+                            </div>
+                            <span class="file-download">⬇️</span>
+                        </div>
+                        <div class="message-time">2:35 PM</div>
+                    </div>
+                </div>
+
+                <div class="message sent">
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        <div class="message-text">Thank you for sharing this. I'll review it and get back to you with my analysis.</div>
+                        <div class="message-time">2:38 PM</div>
+                    </div>
+                </div>
+
+                <div class="message">
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        <div class="message-text">That would be great. I'm also attaching some correspondence we've had with the other party.</div>
+                        <div class="message-time">2:40 PM</div>
+                    </div>
+                </div>
+
+                <div class="message sent">
+                    <div class="message-avatar">👤</div>
+                    <div class="message-content">
+                        <div class="message-text">Understood. I'll need a few more days to thoroughly examine all documents before providing recommendations.</div>
+                        <div class="message-time">2:42 PM</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message-input-container">
+                <button class="attach-btn">📎</button>
+                <input type="text" class="message-input" placeholder="Type your message...">
+                <button class="send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
