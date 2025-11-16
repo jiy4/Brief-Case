@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brief-Case - Your Case, Our Counsel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #3a3d4a;
+            padding: 10px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .donate-btn {
+            background-color: #7a1a31;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .donate-btn:hover {
+            background-color: #5d1425;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text h1 {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .brand-text p {
+            color: #b0b0b0;
+            font-size: 12px;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .create-account-btn {
+            background: transparent;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .create-account-btn:hover {
+            color: #7a1a31;
+        }
+
+        .search-box {
+            background: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 150px;
+        }
+
+        .lang-icon {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .lang-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Navigation */
+        nav {
+            background-color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            padding: 10px 20px;
+            transition: color 0.3s;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            color: #7a1a31;
+            background: #f5f5f5;
+        }
+
+        nav a.home {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 60px 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            background: linear-gradient(135deg, #d5d5d5 0%, #b8b8b8 100%);
+        }
+
+        .hero-section {
+            display: flex;
+            gap: 20px;
+        }
+
+        .briefcase-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #3a3d4a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .hero-content h2 {
+            font-size: 32px;
+            color: #2c2c2c;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-primary {
+            background-color: #7a1a31;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #5d1425;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #7a1a31;
+            padding: 12px 30px;
+            border: 2px solid #7a1a31;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7a1a31;
+            color: white;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-section h3 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c2c2c;
+            font-size: 24px;
+        }
+
+        .chart-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #7a1a31 0deg 216deg,
+                #3a3d4a 216deg 288deg,
+                #e5e5e5 288deg 324deg,
+                #9e9e9e 324deg 360deg
+            );
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .legend-item:hover {
+            background: #f5f5f5;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .resolved { background-color: #7a1a31; }
+        .in-progress { background-color: #3a3d4a; }
+        .pending { background-color: #e5e5e5; }
+        .closed { background-color: #9e9e9e; }
+
+        /* Featured Lawyers */
+        .featured-lawyers {
+            padding: 60px 50px;
+            background-color: #f5f5f5;
+        }
+
+        .featured-lawyers h2 {
+            font-size: 32px;
+            color: #2c2c2c;
+            margin-bottom: 40px;
+        }
+
+        .lawyers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .lawyer-card {
+            background: white;
+            border: 3px solid #6e6e6e;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .lawyer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-color: #7a1a31;
+        }
+
+        .lawyer-image {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #e0e0e0;
+        }
+
+        .lawyer-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .lawyer-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .lawyer-name {
+            color: #999;
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .lawyers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <button class="donate-btn">Donate</button>
+        <div class="logo-section">
+            <div class="logo">
+               <img src="file:///C:/Users/HP/OneDrive/Desktop/finalized%20wireframes/Brief-Case%20Logo.png" alt="Brief-Case Logo">
+            </div>
+
+            <div class="brand-text">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div class="top-right">
+            <button class="create-account-btn">Create Account</button>
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="Search">
+            </div>
+            <span class="lang-icon">🌐</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="home">🏠︎ Home</a>
+        <a href="#lawyer-search">Lawyer Search</a>
+        <a href="#appointment">Appointment Booking</a>
+        <a href="#stay-informed">Stay Informed</a>
+        <a href="#about">About</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="hero-section">
+            <div class="briefcase-icon">💼</div>
+            <div class="hero-content">
+                <h2>Legal Solutions Tailored for You</h2>
+                <p>Access professional legal counsel and services through our comprehensive platform. Find attorneys, schedule consultations, and manage your legal needs efficiently.</p>
+                <div class="action-buttons">
+                    <button class="btn-primary" id="findAttorney">Find an Attorney</button>
+                    <button class="btn-secondary" id="bookConsultation">Book Consultation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <h3>Case Resolution Rates</h3>
+            <div class="chart-container">
+                <div class="pie-chart"></div>
+            </div>
+            <div class="legend">
+                <div class="legend-item" data-type="resolved">
+                    <div class="legend-color resolved"></div>
+                    <span>Resolved (60%)</span>
+                </div>
+                <div class="legend-item" data-type="in-progress">
+                    <div class="legend-color in-progress"></div>
+                    <span>In Progress (20%)</span>
+                </div>
+                <div class="legend-item" data-type="pending">
+                    <div class="legend-color pending"></div>
+                    <span>Pending (10%)</span>
+                </div>
+                <div class="legend-item" data-type="closed">
+                    <div class="legend-color closed"></div>
+                    <span>Closed (10%)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Lawyers -->
+    <div class="featured-lawyers">
+        <h2>Featured Lawyers</h2>
+        <div class="lawyers-grid">
+            <div class="lawyer-card" data-lawyer="Omar Khan">
+                <div class="lawyer-image">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23c4a574' width='150' height='150'/%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.3em' fill='white'%3EOK%3C/text%3E%3C/svg%3E" alt="Omar Khan">
+                </div>
+                <p>A criminal defence lawyer renowned for strategic advocacy in high-stakes trials.</p>
+                <p class="lawyer-name">— Omar Khan</p>
+            </div>
+
+            <div class="lawyer-card" data-lawyer="Amelia Ibrahim">
+                <div class="lawyer-image">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23b89968' width='150' height='150'/%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.3em' fill='white'%3EAI%3C/text%3E%3C/svg%3E" alt="Amelia Ibrahim">
+                </div>
+                <p>A globally recognized corporate attorney shaping the future of cross-border business law.</p>
+                <p class="lawyer-name">— Amelia Ibrahim</p>
+            </div>
+
+            <div class="lawyer-card" data-lawyer="Sofia Reyes">
+                <div class="lawyer-image">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23d4b896' width='150' height='150'/%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle' dy='.3em' fill='white'%3ESR%3C/text%3E%3C/svg%3E" alt="Sofia Reyes">
+                </div>
+                <p>A leading family lawyer redefining the standards of resolution and fairness.</p>
+                <p class="lawyer-name">— Sofia Reyes</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Donate Button
+        document.querySelector('.donate-btn').addEventListener('click', function() {
+            alert('Thank you for your interest in supporting Brief-Case!\nRedirecting to donation page...');
+        });
+
+        // 2. Create Account Button
+        document.querySelector('.create-account-btn').addEventListener('click', function() {
+            alert('Redirecting to account creation page...');
+            // window.location.href = 'signup.html';
+        });
+
+        // 3. Search Box
+        const searchInput = document.querySelector('.search-box input');
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = this.value.trim();
+                if (searchTerm) {
+                    alert(`Searching for: ${searchTerm}`);
+                    // Perform actual search here
+                } else {
+                    alert('Please enter a search term');
+                }
+            }
+        });
+
+        // 4. Language Icon
+        document.querySelector('.lang-icon').addEventListener('click', function() {
+            const languages = 'Select Language:\n\n1. English\n2. اردو (Urdu)\n3. العربية (Arabic)';
+            alert(languages);
+        });
+
+        // 5. Navigation Links
+        const navLinks = document.querySelectorAll('nav a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                navLinks.forEach(l => l.style.backgroundColor = '');
+                
+                // Add active state to clicked link
+                this.style.backgroundColor = '#f5f5f5';
+                
+                const linkText = this.textContent.trim();
+                console.log(`Navigating to: ${linkText}`);
+                
+                // Smooth scroll if it's an anchor link
+                const href = this.getAttribute('href');
+                if (href.startsWith('#') && href !== '#') {
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+
+        // 6. Find an Attorney Button
+        const findAttorneyBtn = document.querySelector('.btn-primary');
+        findAttorneyBtn.addEventListener('click', function() {
+            alert('Redirecting to Lawyer Search page...');
+            // window.location.href = 'lawyer-search.html';
+        });
+
+        // 7. Book Consultation Button
+        const bookConsultationBtn = document.querySelector('.btn-secondary');
+        bookConsultationBtn.addEventListener('click', function() {
+            alert('Redirecting to Appointment Booking page...');
+            // window.location.href = 'appointment-booking.html';
+        });
+
+        // 8. Legend Items (Case Resolution Box) - Hover and Click
+        const legendItems = document.querySelectorAll('.legend-item');
+        legendItems.forEach(item => {
+            // Click functionality
+            item.addEventListener('click', function() {
+                const caseType = this.querySelector('span').textContent;
+                const details = {
+                    'Resolved (60%)': 'Resolved Cases: 60%\nSuccessfully closed cases with favorable outcomes.',
+                    'In Progress (20%)': 'In Progress: 20%\nActive cases currently being handled.',
+                    'Pending (10%)': 'Pending: 10%\nCases awaiting review or documentation.',
+                    'Closed (10%)': 'Closed: 10%\nCases that have been formally closed.'
+                };
+                alert(details[caseType] || `Information about ${caseType}`);
+            });
+
+            // Hover effect - already styled in CSS, just need cursor
+            item.style.cursor = 'pointer';
+            item.style.transition = 'all 0.3s ease';
+            
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+
+        // 9. Lawyer Cards - Click (hover already in CSS)
+        const lawyerCards = document.querySelectorAll('.lawyer-card');
+        lawyerCards.forEach(card => {
+            // Click functionality
+            card.addEventListener('click', function() {
+                const lawyerName = this.getAttribute('data-lawyer');
+                const specialty = this.querySelector('p:first-of-type').textContent;
+                alert(`${lawyerName}\n\n${specialty}\n\nWould you like to:\n1. View Full Profile\n2. Book Appointment\n3. Send Message`);
+            });
+        });
+
+        // 10. Pie Chart Animation on Hover
+        const pieChart = document.querySelector('.pie-chart');
+        pieChart.style.transition = 'transform 0.3s ease';
+        pieChart.style.cursor = 'pointer';
+
+        pieChart.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05) rotate(5deg)';
+        });
+
+        pieChart.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0deg)';
+        });
+
+        pieChart.addEventListener('click', function() {
+            alert('Case Resolution Statistics:\n\n✓ Resolved: 60%\n⟳ In Progress: 20%\n⏸ Pending: 10%\n✕ Closed: 10%');
+        });
+
+        // 11. Smooth Scroll for entire page
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
