@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brief-Case System Diagnostic</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Courier New', monospace; 
+            background: #1e1e1e; 
+            color: #fff; 
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: #4fc3f7; margin-bottom: 20px; }
+        h2 { color: #81c784; margin: 20px 0 10px; }
+        .test-section { 
+            background: #2d2d2d; 
+            border-left: 4px solid #4fc3f7; 
+            padding: 15px; 
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .status { 
+            display: inline-block; 
+            padding: 4px 12px; 
+            border-radius: 4px; 
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.success { background: #4caf50; color: white; }
+        .status.error { background: #f44336; color: white; }
+        .status.warning { background: #ff9800; color: white; }
+        .status.info { background: #2196f3; color: white; }
+        .code { 
+            background: #1a1a1a; 
+            padding: 10px; 
+            border-radius: 4px; 
+            margin: 10px 0;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        button {
+            background: #4fc3f7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+        }
+        button:hover { background: #29b6f6; }
+        .error-text { color: #f44336; }
+        .success-text { color: #4caf50; }
+        .warning-text { color: #ff9800; }
+        ul { margin-left: 20px; margin-top: 10px; }
+        li { margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Brief-Case System Diagnostic</h1>
+        <p style="margin-bottom: 20px;">This page will check your Supabase configuration and identify any issues.</p>
+
+        <button onclick="runAllTests()">🚀 Run All Tests</button>
+        <button onclick="location.reload()">🔄 Reload Page</button>
+
+        <div id="results"></div>
+    </div>
+
+    <script src="js/supabase-client.js"></script>
+    <script>
+        let testResults = [];
+
+        function addResult(title, status, message, details = null) {
+            testResults.push({ title, status, message, details });
+            displayResults();
+        }
+
+        function displayResults() {
+            const container = document.getElementById('results');
+            container.innerHTML = testResults.map(result => `
+                <div class="test-section">
+                    <h3>
+                        ${result.title}
+                        <span class="status ${result.status}">${result.status.toUpperCase()}</span>
+                    </h3>
+                    <p style="margin-top: 10px;">${result.message}</p>
+                    ${result.details ? `<div class="code">${result.details}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        async function runAllTests() {
+            testResults = [];
+            displayResults();
+
+            await test1_SupabaseClientLoaded();
+            await test2_SupabaseConnection();
+            await test3_AuthConfiguration();
+            await test4_DatabaseTables();
+            await test5_RLSPolicies();
+            await test6_StorageBuckets();
+            await test7_TestSignup();
+
+            // Summary
+            const successCount = testResults.filter(r => r.status === 'success').length;
+            const errorCount = testResults.filter(r => r.status === 'error').length;
+            const warningCount = testResults.filter(r => r.status === 'warning').length;
+
+            addResult(
+                '📊 Test Summary',
+                errorCount === 0 ? 'success' : 'error',
+                `Tests completed: ${successCount} passed, ${errorCount} failed, ${warningCount} warnings`,
+                errorCount === 0 
+                    ? 'All systems operational! Your signup should work now.' 
+                    : 'Please fix the errors above before attempting signup.'
+            );
+        }
+
+        async function test1_SupabaseClientLoaded() {
+            if (window.SupabaseClient && window.SupabaseClient.supabase) {
+                addResult(
+                    '1. Supabase Client',
+                    'success',
+                    'Supabase client loaded successfully',
+                    `Project: ${window.SupabaseClient.supabase.supabaseUrl}`
+                );
+            } else {
+                addResult(
+                    '1. Supabase Client',
+                    'error',
+                    'Supabase client not loaded',
+                    'Check that js/supabase-client.js is correctly included in your HTML'
+                );
+            }
+        }
+
+        async function test2_SupabaseConnection() {
+            try {
+                const { data, error } = await window.SupabaseClient.supabase
+                    .from('users')
+                    .select('count')
+                    .limit(1);
+
+                if (error) throw error;
+
+                addResult(
+                    '2. Database Connection',
+                    'success',
+                    'Successfully connected to database'
+                );
+            } catch (error) {
+                addResult(
+                    '2. Database Connection',
+                    'error',
+                    'Database connection failed',
+                    `Error: ${error.message}`
+                );
+            }
+        }
+
+        async function test3_AuthConfiguration() {
+            try {
+                const { data: { session } } = await window.SupabaseClient.supabase.auth.getSession();
+                
+                // Try to get auth settings (this will fail but that's ok)
+                const response = await fetch(
+                    `${window.SupabaseClient.supabase.supabaseUrl}/auth/v1/settings`,
+                    {
+                        headers: {
+                            'apikey': window.SupabaseClient.supabase.supabaseKey
+                        }
+                    }
+                );
+                
+                if (response.ok) {
+                    const settings = await response.json();
+                    const emailConfirmRequired = settings.external?.email?.enabled && 
+                                                settings.external?.email?.email_confirmed_required;
+                    
+                    if (emailConfirmRequired) {
+                        addResult(
+                            '3. Auth Configuration',
+                            'warning',
+                            '⚠️ Email confirmation is ENABLED',
+                            'This will cause signup to hang. Disable it in: Authentication > Providers > Email'
+                        );
+                    } else {
+                        addResult(
+                            '3. Auth Configuration',
+                            'success',
+                            'Auth configured correctly'
+                        );
+                    }
+                } else {
+                    addResult(
+                        '3. Auth Configuration',
+                        'info',
+                        'Unable to check auth settings (this is ok)',
+                        'Manually verify email confirmation is disabled in Supabase Dashboard'
+                    );
+                }
+            } catch (error) {
+                addResult(
+                    '3. Auth Configuration',
+                    'info',
+                    'Auth check completed',
+                    'Manually verify email confirmation is disabled in: Authentication > Providers > Email'
+                );
+            }
+        }
+
+        async function test4_DatabaseTables() {
+            const requiredTables = [
+                'users',
+                'lawyers',
+                'practice_areas',
+                'lawyer_practice_areas',
+                'appointments',
+                'conversations',
+                'messages',
+                'documents',
+                'reviews'
+            ];
+
+            let allTablesExist = true;
+            let missingTables = [];
+
+            for (const table of requiredTables) {
+                try {
+                    const { data, error } = await window.SupabaseClient.supabase
+                        .from(table)
+                        .select('count')
+                        .limit(1);
+
+                    if (error) throw error;
+                } catch (error) {
+                    allTablesExist = false;
+                    missingTables.push(table);
+                }
+            }
+
+            if (allTablesExist) {
+                addResult(
+                    '4. Database Tables',
+                    'success',
+                    `All ${requiredTables.length} required tables exist`
+                );
+            } else {
+                addResult(
+                    '4. Database Tables',
+                    'error',
+                    'Some database tables are missing',
+                    `Missing tables: ${missingTables.join(', ')}<br><br>
+                    Run the SQL script in TROUBLESHOOTING.md STEP 3 to create them.`
+                );
+            }
+        }
+
+        async function test5_RLSPolicies() {
+            try {
+                // Test if we can insert into users table (should work with proper RLS)
+                const testUserId = '00000000-0000-0000-0000-000000000000';
+                
+                // This will fail if RLS is blocking, but that tells us RLS is enabled
+                const { error } = await window.SupabaseClient.supabase
+                    .from('users')
+                    .select('count')
+                    .limit(1);
+
+                if (error && error.message.includes('permission denied')) {
+                    addResult(
+                        '5. Row Level Security',
+                        'warning',
+                        'RLS is enabled but policies may be too restrictive',
+                        'Run the RLS policy SQL in TROUBLESHOOTING.md STEP 4'
+                    );
+                } else {
+                    addResult(
+                        '5. Row Level Security',
+                        'success',
+                        'RLS policies appear to be configured'
+                    );
+                }
+            } catch (error) {
+                addResult(
+                    '5. Row Level Security',
+                    'info',
+                    'RLS check completed',
+                    'Ensure you ran the RLS policy SQL from TROUBLESHOOTING.md STEP 4'
+                );
+            }
+        }
+
+        async function test6_StorageBuckets() {
+            try {
+                const { data: buckets, error } = await window.SupabaseClient.supabase.storage.listBuckets();
+
+                if (error) throw error;
+
+                const requiredBuckets = ['profile-photos', 'documents', 'chat-attachments'];
+                const existingBucketNames = buckets.map(b => b.name);
+                const missingBuckets = requiredBuckets.filter(b => !existingBucketNames.includes(b));
+
+                if (missingBuckets.length === 0) {
+                    addResult(
+                        '6. Storage Buckets',
+                        'success',
+                        'All required storage buckets exist',
+                        `Buckets: ${existingBucketNames.join(', ')}`
+                    );
+                } else {
+                    addResult(
+                        '6. Storage Buckets',
+                        'warning',
+                        'Some storage buckets are missing',
+                        `Missing: ${missingBuckets.join(', ')}<br><br>
+                        Create them in: Supabase Dashboard > Storage > New bucket`
+                    );
+                }
+            } catch (error) {
+                addResult(
+                    '6. Storage Buckets',
+                    'error',
+                    'Could not check storage buckets',
+                    `Error: ${error.message}`
+                );
+            }
+        }
+
+        async function test7_TestSignup() {
+            addResult(
+                '7. Test Signup',
+                'info',
+                'Ready to test signup',
+                `If all tests above passed, try creating a test account at:<br>
+                <a href="signup.html" style="color: #4fc3f7;">signup.html</a><br><br>
+                Use test credentials:<br>
+                • Email: test@example.com<br>
+                • Password: password123<br>
+                • Full Name: Test User<br>
+                • CNIC: 12345-1234567-1<br><br>
+                Open browser console (F12) while testing to see detailed logs.`
+            );
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - BRIEF-CASE</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f0e6e8; min-height: 100vh; }
+        .top-nav { background: #3a3d4a; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .donate-btn { background: #7a1a31; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
+        .logo-section { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: center; }
+        .logo { font-size: 32px; }
+        .brand-text h1 { color: white; font-size: 18px; }
+        .brand-text p { color: #ccc; font-size: 11px; }
+        .page-header { background: white; padding: 18px 30px; display: flex; justify-content: space-between; }
+        .back-arrow { font-size: 20px; cursor: pointer; margin-right: 10px; }
+        .main-content { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .lawyer-info { display: flex; align-items: center; gap: 20px; }
+        .lawyer-avatar { width: 70px; height: 70px; background: #e0e0e0; border-radius: 50%; overflow: hidden; }
+        .lawyer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .section-title { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+        .date-cell { text-align: center; padding: 12px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .date-cell:hover { border-color: #7a1a31; }
+        .date-cell.selected { background: #7a1a31; color: white; border-color: #7a1a31; }
+        .time-slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .time-slot { padding: 14px; border: 2px solid #999; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .time-slot:hover { border-color: #7a1a31; }
+        .time-slot.selected { background: #5a9367; color: white; border-color: #5a9367; }
+        .meeting-options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .meeting-option { padding: 18px; border: 2px solid #999; border-radius: 8px; cursor: pointer; display: flex; gap: 12px; }
+        .meeting-option.selected { background: #7a1a31; color: white; border-color: #7a1a31; }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .summary-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .action-buttons { display: flex; gap: 15px; justify-content: flex-end; }
+        .btn { padding: 14px 30px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .btn-back { background: white; color: #7a1a31; border: 2px solid #7a1a31; }
+        .btn-confirm { background: #7a1a31; color: white; border: none; }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <button class="donate-btn" onclick="goToDonate()">Donate</button>
+        <div class="logo-section">
+            
+            <div class="brand-text">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div style="width:100px;"></div>
+    </div>
+
+    <div class="page-header">
+        <div>
+            <span class="back-arrow" onclick="goBack()">←</span>
+            <span style="font-size:20px;">Book Appointment</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="card">
+            <div class="lawyer-info" id="lawyerInfo">
+                <div class="lawyer-avatar">👤</div>
+                <div>
+                    <h2 id="lawyerName">Loading...</h2>
+                    <p id="lawyerSpecialty"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="section-title">Select Appointment Details</h3>
+            
+            <h4 style="margin-bottom:15px;">Choose Date</h4>
+            <div class="calendar-grid" id="dateGrid"></div>
+
+            <h4 style="margin:30px 0 15px;">Available Time Slots</h4>
+            <div class="time-slots" id="timeSlots"></div>
+
+            <h4 style="margin-bottom:15px;">Meeting Type</h4>
+            <div class="meeting-options">
+                <div class="meeting-option" data-type="online">
+                    <span>📹</span>
+                    <div>
+                        <h4>Online Meeting</h4>
+                        <p>Via video call</p>
+                    </div>
+                </div>
+                <div class="meeting-option selected" data-type="in-person">
+                    <span>🏛️</span>
+                    <div>
+                        <h4>In-Person Meeting</h4>
+                        <p>At lawyer's office</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="section-title">Appointment Summary</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <span>Date:</span>
+                    <span id="summaryDate">Not selected</span>
+                </div>
+                <div class="summary-item">
+                    <span>Time:</span>
+                    <span id="summaryTime">Not selected</span>
+                </div>
+                <div class="summary-item">
+                    <span>Meeting Type:</span>
+                    <span id="summaryType">In-Person</span>
+                </div>
+                <div class="summary-item" style="grid-column:1/-1;">
+                    <span>Consultation Fee:</span>
+                    <span id="summaryFee">PKR 0</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-back" onclick="goBack()">Back</button>
+                <button class="btn btn-confirm" onclick="confirmBooking()">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        let lawyerData = null;
+        let selectedDate = null;
+        let selectedTime = null;
+        let selectedType = 'in-person';
+
+        async function init() {
+            const lawyerId = window.Navigation.getUrlParameter('lawyerId');
+            
+            if (!lawyerId) {
+                alert('Lawyer not specified');
+                goBack();
+                return;
+            }
+            
+            const result = await window.Search.getLawyerDetails(lawyerId);
+            if (result.success) {
+                lawyerData = result.data;
+                displayLawyerInfo();
+                generateDates();
+                generateTimeSlots();
+            }
+        }
+
+        function displayLawyerInfo() {
+            document.getElementById('lawyerName').textContent = 
+                `${lawyerData.users.first_name} ${lawyerData.users.last_name}`;
+            document.getElementById('lawyerSpecialty').textContent = 
+                lawyerData.lawyer_practice_areas?.map(pa => pa.practice_areas.name).join(', ') || 'Legal Services';
+            document.getElementById('summaryFee').textContent = 
+                `PKR ${lawyerData.consultation_fee?.toLocaleString() || '5,000'}`;
+            
+            if (lawyerData.users.profile_photo_url) {
+                document.querySelector('.lawyer-avatar').innerHTML = 
+                    `<img src="${lawyerData.users.profile_photo_url}">`;
+            }
+        }
+
+        function generateDates() {
+            const grid = document.getElementById('dateGrid');
+            const today = new Date();
+            
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                
+                const cell = document.createElement('div');
+                cell.className = 'date-cell';
+                cell.dataset.date = date.toISOString().split('T')[0];
+                cell.innerHTML = `
+                    <div style="font-weight:600;">${date.getDate()}</div>
+                    <div style="font-size:12px;">${date.toLocaleDateString('en-US', {month:'short'})}</div>
+                `;
+                
+                cell.addEventListener('click', function() {
+                    document.querySelectorAll('.date-cell').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedDate = this.dataset.date;
+                    document.getElementById('summaryDate').textContent = 
+                        new Date(selectedDate).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+                });
+                
+                grid.appendChild(cell);
+            }
+        }
+
+        function generateTimeSlots() {
+            const slots = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', 
+                          '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'];
+            const container = document.getElementById('timeSlots');
+            
+            slots.forEach(time => {
+                const slot = document.createElement('div');
+                slot.className = 'time-slot';
+                slot.textContent = time;
+                
+                slot.addEventListener('click', function() {
+                    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedTime = time;
+                    document.getElementById('summaryTime').textContent = time;
+                });
+                
+                container.appendChild(slot);
+            });
+        }
+
+        document.querySelectorAll('.meeting-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.meeting-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedType = this.dataset.type;
+                document.getElementById('summaryType').textContent = 
+                    selectedType === 'online' ? 'Online' : 'In-Person';
+            });
+        });
+
+        async function confirmBooking() {
+            if (!selectedDate || !selectedTime) {
+                alert('Please select date and time');
+                return;
+            }
+            
+            const user = await window.SupabaseClient.getCurrentUser();
+            if (!user) {
+                alert('Please login to book');
+                goToLogin();
+                return;
+            }
+            
+            const result = await window.Search.createAppointment({
+                clientId: user.id,
+                lawyerId: lawyerData.id,
+                date: selectedDate,
+                time: selectedTime,
+                meetingType: selectedType,
+                title: 'Legal Consultation',
+                description: 'Consultation meeting'
+            });
+            
+            if (result.success) {
+                alert('Appointment booked successfully!');
+                goToPayment({ 
+                    appointmentId: result.data.id,
+                    lawyerId: lawyerData.id
+                });
+            } else {
+                alert('Booking failed: ' + result.error);
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Lawyers - Brief Case</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header { 
+            background: linear-gradient(135deg, #3a3d4a 0%, #2c2f38 100%);
+            padding: 12px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .donate-btn { 
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white; 
+            border: none; 
+            padding: 10px 25px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(122, 26, 49, 0.3);
+        }
+        
+        .donate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(122, 26, 49, 0.4);
+        }
+        
+        .logo-section { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            flex: 1; 
+            justify-content: center;
+        }
+        
+        .logo { 
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(122, 26, 49, 0.3);
+        }
+        
+        .brand-text h1 { 
+            color: white; 
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .brand-text p { 
+            color: #b0b0b0; 
+            font-size: 12px;
+            font-style: italic;
+        }
+        
+        .header-right { 
+            display: flex; 
+            gap: 15px; 
+            align-items: center;
+        }
+        
+        .search-box { 
+            padding: 8px 15px; 
+            border: none;
+            border-radius: 20px; 
+            width: 200px;
+            font-size: 14px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 250px;
+        }
+        
+        .user-icon { 
+            width: 40px; 
+            height: 40px; 
+            background: white;
+            border-radius: 50%; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .user-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Page Header */
+        .page-header { 
+            background: white;
+            padding: 20px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .back-arrow { 
+            font-size: 28px; 
+            cursor: pointer;
+            color: #7a1a31;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+        }
+        
+        .back-arrow:hover {
+            transform: translateX(-5px);
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c2c2c;
+        }
+
+        /* Main Content */
+        main { 
+            padding: 40px 50px; 
+            max-width: 1200px; 
+            margin: 0 auto;
+        }
+
+        /* Search Section */
+        .search-section { 
+            text-align: center; 
+            margin-bottom: 40px;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+            pointer-events: none;
+        }
+        
+        .main-search { 
+            width: 100%; 
+            padding: 16px 20px 16px 50px; 
+            border: 2px solid #e0e0e0;
+            border-radius: 50px; 
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .main-search:focus {
+            outline: none;
+            border-color: #7a1a31;
+            box-shadow: 0 6px 20px rgba(122, 26, 49, 0.15);
+        }
+        
+        .main-search::placeholder {
+            color: #999;
+        }
+
+        /* Filters */
+        .filters { 
+            display: flex; 
+            gap: 15px; 
+            justify-content: center; 
+            margin-bottom: 40px; 
+            flex-wrap: wrap;
+            animation: fadeInUp 0.7s ease;
+        }
+        
+        .filter-dropdown { 
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            padding: 12px 30px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .filter-dropdown:hover {
+            border-color: #7a1a31;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(122, 26, 49, 0.15);
+        }
+        
+        .filter-dropdown:focus {
+            outline: none;
+            border-color: #7a1a31;
+            box-shadow: 0 0 0 3px rgba(122, 26, 49, 0.1);
+        }
+
+        /* Results Header */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 0 5px;
+        }
+        
+        .results-count {
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .results-count strong {
+            color: #7a1a31;
+            font-weight: 700;
+        }
+
+        /* Lawyer Cards */
+        .lawyer-card { 
+            background: white;
+            border: 2px solid transparent;
+            border-radius: 16px; 
+            padding: 25px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        .lawyer-card:hover { 
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border-color: #7a1a31;
+        }
+        
+        .lawyer-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 20px;
+            flex: 1;
+        }
+        
+        .lawyer-avatar { 
+            width: 80px; 
+            height: 80px; 
+            border-radius: 50%;
+            overflow: hidden; 
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 3px solid #f5f5f5;
+            transition: all 0.3s ease;
+        }
+        
+        .lawyer-card:hover .lawyer-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        
+        .lawyer-avatar img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
+        }
+        
+        .lawyer-details {
+            flex: 1;
+        }
+        
+        .lawyer-details h3 { 
+            font-size: 20px; 
+            margin-bottom: 8px; 
+            color: #2c2c2c;
+            font-weight: 700;
+        }
+        
+        .lawyer-details p { 
+            color: #666; 
+            font-size: 14px; 
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .lawyer-details p strong {
+            color: #7a1a31;
+            font-weight: 600;
+        }
+        
+        .rating-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        
+        .stars { 
+            color: #ffc107; 
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+        
+        .rating-value {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .view-profile-btn { 
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white; 
+            border: none; 
+            padding: 12px 30px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(122, 26, 49, 0.3);
+        }
+        
+        .view-profile-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(122, 26, 49, 0.4);
+        }
+
+        /* Empty States */
+        .no-results { 
+            text-align: center; 
+            padding: 60px 40px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .no-results h2 { 
+            margin-bottom: 12px;
+            color: #2c2c2c;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .no-results p {
+            color: #666;
+            font-size: 15px;
+        }
+        
+        .error-message { 
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border: 2px solid #ef5350;
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 25px; 
+            color: #c62828;
+            box-shadow: 0 4px 12px rgba(239, 83, 80, 0.2);
+        }
+        
+        .error-message strong {
+            font-weight: 700;
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(122, 26, 49, 0.3);
+            border-radius: 50%;
+            border-top-color: #7a1a31;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .lawyer-card:nth-child(1) { animation-delay: 0.1s; }
+        .lawyer-card:nth-child(2) { animation-delay: 0.2s; }
+        .lawyer-card:nth-child(3) { animation-delay: 0.3s; }
+        .lawyer-card:nth-child(4) { animation-delay: 0.4s; }
+        .lawyer-card:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 20px;
+            }
+            
+            main {
+                padding: 30px 20px;
+            }
+            
+            .lawyer-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .lawyer-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .view-profile-btn {
+                width: 100%;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-dropdown {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="donate-btn" onclick="goToDonate()">Donate</button>
+        <div class="logo-section">
+           
+            <div class="brand-text">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <input type="text" class="search-box" placeholder="Quick search...">
+            <div class="user-icon" onclick="goToProfile()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div>
+            <span class="back-arrow" onclick="goBack()">←</span>
+            <span class="page-title">Search Lawyers</span>
+        </div>
+    </div>
+
+    <main>
+        <div class="search-section">
+            <div class="search-wrapper">
+                <span class="search-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </span>
+                <input type="text" class="main-search" id="searchInput" placeholder="Search lawyers by name, firm, or specialty...">
+            </div>
+        </div>
+
+        <div class="filters">
+            <select class="filter-dropdown" id="specialtyFilter">
+                <option value="">All Specialties</option>
+            </select>
+            <select class="filter-dropdown" id="ratingFilter">
+                <option value="">Any Rating</option>
+                <option value="4">4+ Stars</option>
+                <option value="4.5">4.5+ Stars</option>
+            </select>
+            <select class="filter-dropdown" id="typeFilter">
+                <option value="">Any Type</option>
+                <option value="in-person">In-Person</option>
+                <option value="online">Online</option>
+            </select>
+        </div>
+
+        <div id="errorContainer"></div>
+        
+        <div class="results-header" id="resultsHeader" style="display: none;">
+            <div class="results-count" id="resultsCount"></div>
+        </div>
+        
+        <div id="lawyersContainer"></div>
+    </main>
+
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        let allLawyers = [];
+
+        async function loadPracticeAreas() {
+            try {
+                const result = await window.Search.getPracticeAreas();
+                const select = document.getElementById('specialtyFilter');
+                
+                if (result.success && result.data) {
+                    result.data.forEach(area => {
+                        const option = document.createElement('option');
+                        option.value = area.name;
+                        option.textContent = area.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading practice areas:', error);
+            }
+        }
+
+        async function searchLawyers() {
+            const container = document.getElementById('lawyersContainer');
+            const errorContainer = document.getElementById('errorContainer');
+            const resultsHeader = document.getElementById('resultsHeader');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            container.innerHTML = '<div class="no-results"><div class="loading-spinner"></div><p style="margin-top:15px;">Loading lawyers...</p></div>';
+            errorContainer.innerHTML = '';
+            resultsHeader.style.display = 'none';
+
+            const filters = {
+                searchQuery: document.getElementById('searchInput').value,
+                specialty: document.getElementById('specialtyFilter').value,
+                minRating: document.getElementById('ratingFilter').value,
+                consultationType: document.getElementById('typeFilter').value
+            };
+
+            console.log('Searching with filters:', filters);
+
+            const result = await window.Search.searchLawyers(filters);
+            
+            console.log('Search result:', result);
+
+            if (!result.success) {
+                errorContainer.innerHTML = `<div class="error-message">
+                    <strong>Error:</strong> ${result.error}
+                </div>`;
+                container.innerHTML = '<div class="no-results"><h2>Unable to load lawyers</h2><p>Please check the console for details</p></div>';
+                return;
+            }
+
+            allLawyers = result.data;
+
+            if (!allLawyers || allLawyers.length === 0) {
+                container.innerHTML = '<div class="no-results"><h2>No lawyers found</h2><p>Try adjusting your search criteria or check back later</p></div>';
+                return;
+            }
+
+            console.log(`Found ${allLawyers.length} lawyer(s)`);
+            
+            // Show results count
+            resultsHeader.style.display = 'flex';
+            resultsCount.innerHTML = `Found <strong>${allLawyers.length}</strong> ${allLawyers.length === 1 ? 'lawyer' : 'lawyers'}`;
+
+            container.innerHTML = allLawyers.map(lawyer => {
+                // Handle practice areas safely
+                let practiceAreasText = 'General Practice';
+                if (lawyer.lawyer_practice_areas && lawyer.lawyer_practice_areas.length > 0) {
+                    const areas = lawyer.lawyer_practice_areas
+                        .filter(pa => pa.practice_areas)
+                        .map(pa => pa.practice_areas.name);
+                    if (areas.length > 0) {
+                        practiceAreasText = areas.join(', ');
+                    }
+                }
+
+                // Handle rating safely
+                const rating = lawyer.average_rating || 5;
+                const stars = '★'.repeat(Math.floor(rating));
+
+                // Handle law firm display
+                const lawFirmText = lawyer.law_firm ? ` at ${lawyer.law_firm}` : '';
+
+                return `
+                    <div class="lawyer-card">
+                        <div class="lawyer-info">
+                            <div class="lawyer-avatar">
+                                ${lawyer.users.profile_photo_url 
+                                    ? `<img src="${lawyer.users.profile_photo_url}" alt="Profile">` 
+                                    : `<div style="width:100%;height:100%;background:linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);display:flex;align-items:center;justify-content:center;color:white;font-size:32px;font-weight:700;">${lawyer.users.first_name.charAt(0)}${lawyer.users.last_name.charAt(0)}</div>`}
+                            </div>
+                            <div class="lawyer-details">
+                                <h3>${lawyer.users.first_name} ${lawyer.users.last_name}</h3>
+                                <p><strong>${practiceAreasText}</strong>${lawFirmText}</p>
+                                <div class="rating-container">
+                                    <span class="stars" title="${rating.toFixed(1)} stars">${stars}</span>
+                                    <span class="rating-value">${rating.toFixed(1)}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="view-profile-btn" onclick="goToLawyerProfile('${lawyer.id}')">View Profile</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('keyup', debounce(searchLawyers, 500));
+        document.getElementById('specialtyFilter').addEventListener('change', searchLawyers);
+        document.getElementById('ratingFilter').addEventListener('change', searchLawyers);
+        document.getElementById('typeFilter').addEventListener('change', searchLawyers);
+
+        // Debounce function to avoid too many searches while typing
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Check URL params
+        const urlQuery = new URLSearchParams(window.location.search).get('q');
+        if (urlQuery) {
+            document.getElementById('searchInput').value = urlQuery;
+        }
+
+        // Initialize
+        console.log('Initializing lawyer search page...');
+        loadPracticeAreas();
+        searchLawyers();
+    </script>
+</body>
+</html>

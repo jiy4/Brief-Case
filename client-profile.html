@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Profile Settings - Brief Case</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header { 
+            background: linear-gradient(135deg, #3a3d4a 0%, #2c2f38 100%);
+            padding: 12px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .donate-btn { 
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white; 
+            border: none; 
+            padding: 10px 25px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(122, 26, 49, 0.3);
+        }
+        .donate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(122, 26, 49, 0.4);
+        }
+        .logo-section { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            flex: 1; 
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .logo-section:hover {
+            opacity: 0.85;
+            transform: scale(1.02);
+        }
+        .logo { 
+            font-size: 40px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        .brand-text h1 { 
+            color: white; 
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .brand-text p { 
+            color: #b0b0b0; 
+            font-size: 12px;
+            font-style: italic;
+        }
+        .header-right { display: flex; gap: 15px; }
+
+        /* Page Header */
+        .page-header { 
+            background: white;
+            padding: 20px 50px; 
+            display: flex; 
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .back-arrow { 
+            font-size: 28px; 
+            cursor: pointer; 
+            margin-right: 15px;
+            color: #7a1a31;
+            transition: all 0.3s;
+        }
+        .back-arrow:hover {
+            transform: translateX(-5px);
+        }
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c2c2c;
+        }
+
+        /* Main Content */
+        main { 
+            padding: 40px 50px; 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 30px; 
+            max-width: 1400px; 
+            margin: 0 auto;
+        }
+
+        /* Card Styles */
+        .card { 
+            background: white;
+            border-radius: 16px; 
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            border-color: #7a1a31;
+        }
+        .card h3 {
+            font-size: 22px;
+            color: #2c2c2c;
+            margin-bottom: 25px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h3::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            border-radius: 2px;
+        }
+
+        /* Profile Photo Section */
+        .profile-photo-section { 
+            display: flex; 
+            gap: 25px; 
+            margin-bottom: 25px;
+            align-items: center;
+        }
+        .profile-photo { 
+            width: 140px; 
+            height: 140px; 
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border: 4px solid white;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #888;
+        }
+        .profile-photo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        }
+        .profile-photo img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
+        }
+        .photo-buttons { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px;
+        }
+        .btn-secondary { 
+            background: white;
+            border: 2px solid #7a1a31;
+            color: #7a1a31;
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-secondary:hover {
+            background: #7a1a31;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(122, 26, 49, 0.3);
+        }
+
+        /* Form Styles */
+        .form-row { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-bottom: 20px;
+        }
+        .form-group { 
+            display: flex; 
+            flex-direction: column;
+        }
+        .form-group label { 
+            font-size: 14px; 
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #3a3d4a;
+        }
+        .form-group input { 
+            padding: 12px 15px; 
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #7a1a31;
+            box-shadow: 0 0 0 3px rgba(122, 26, 49, 0.1);
+        }
+        .form-group input:read-only {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        /* Button Styles */
+        .btn-primary { 
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white; 
+            border: none; 
+            padding: 14px 30px; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(122, 26, 49, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(122, 26, 49, 0.4);
+        }
+
+        /* Appointment Item */
+        .appointment-item { 
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 15px;
+            border: 2px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        .appointment-item:hover {
+            border-color: #7a1a31;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .appointment-item h4 { 
+            color: #2c2c2c; 
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .appointment-item p { 
+            color: #666; 
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .appointment-actions { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px;
+        }
+        .btn-reschedule, .btn-cancel { 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-reschedule { 
+            background: white;
+            border: 2px solid #7a1a31;
+            color: #7a1a31;
+        }
+        .btn-reschedule:hover {
+            background: #7a1a31;
+            color: white;
+        }
+        .btn-cancel { 
+            background: #dc3545;
+            color: white;
+        }
+        .btn-cancel:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Document Item */
+        .document-item { 
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 15px;
+            border: 2px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        .document-item:hover {
+            border-color: #7a1a31;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .document-item h4 { 
+            color: #2c2c2c; 
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .document-item p { 
+            color: #666; 
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        .document-actions { 
+            display: flex; 
+            gap: 10px;
+        }
+        .btn-download, .btn-delete { 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-download { 
+            background: white;
+            border: 2px solid #7a1a31;
+            color: #7a1a31;
+        }
+        .btn-download:hover {
+            background: #7a1a31;
+            color: white;
+        }
+        .btn-delete { 
+            background: #dc3545;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Empty State */
+        .empty-state { 
+            text-align: center; 
+            padding: 40px; 
+            color: #999;
+            font-size: 16px;
+            font-style: italic;
+        }
+
+        /* Logout Button */
+        .btn-logout { 
+            background: white;
+            color: #7a1a31;
+            border: 2px solid #7a1a31;
+            padding: 10px 25px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .btn-logout:hover {
+            background: #7a1a31;
+            color: white;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="donate-btn" onclick="goToDonate()">Support Us</button>
+        <div class="logo-section" onclick="goToHome()">
+           
+            <div class="brand-text">
+                <h1>Brief-Case</h1>
+                <p>Your Case, Our Counsel</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div style="display:flex;align-items:center;">
+            <span class="back-arrow" onclick="goToHome()">←</span>
+            <h2 class="page-title">Profile Settings</h2>
+        </div>
+    </div>
+
+    <main>
+        <div style="display:flex;flex-direction:column;gap:30px;">
+            <div class="card">
+                <h3>Profile Photo</h3>
+                <div class="profile-photo-section">
+                    <div class="profile-photo" id="profilePhoto">👤</div>
+                    <div class="photo-buttons">
+                        <input type="file" id="photoInput" accept="image/*" style="display:none;">
+                        <button class="btn-secondary" onclick="document.getElementById('photoInput').click()">Change Photo</button>
+                        <button class="btn-secondary" onclick="removePhoto()">Remove Photo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Personal Information</h3>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullName" placeholder="John Doe">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="phone" placeholder="+92 300 1234567">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" id="dob">
+                </div>
+                <button class="btn-primary" onclick="saveProfile()">Save Changes</button>
+            </div>
+
+            <div class="card">
+                <h3>Security Settings</h3>
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPassword" placeholder="Enter current password">
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password">
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter new password">
+                </div>
+                <button class="btn-primary" onclick="updatePassword()">Update Password</button>
+            </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:30px;">
+            <div class="card">
+                <h3>My Appointments</h3>
+                <div id="appointmentsList">Loading...</div>
+            </div>
+
+            <div class="card">
+                <h3>Legal Documents</h3>
+                <input type="file" id="documentInput" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png" style="display: none;">
+                <button class="btn-secondary" onclick="document.getElementById('documentInput').click()" style="margin-bottom:20px;">Upload Document</button>
+                <div id="documentsList">Loading...</div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        let currentUser = null;
+        let currentProfile = null;
+
+        async function init() {
+            currentUser = await window.SupabaseClient.getCurrentUser();
+            if (!currentUser) {
+                goToLogin();
+                return;
+            }
+            
+            await loadProfile();
+            await loadAppointments();
+            await loadDocuments();
+        }
+
+        async function loadProfile() {
+            currentProfile = await window.SupabaseClient.getUserProfile(currentUser.id);
+            
+            if (currentProfile) {
+                document.getElementById('fullName').value = 
+                    `${currentProfile.first_name} ${currentProfile.last_name}`;
+                document.getElementById('email').value = currentProfile.email;
+                document.getElementById('phone').value = currentProfile.phone_number || '';
+                document.getElementById('dob').value = currentProfile.date_of_birth || '';
+                
+                if (currentProfile.profile_photo_url) {
+                    document.getElementById('profilePhoto').innerHTML = 
+                        `<img src="${currentProfile.profile_photo_url}">`;
+                }
+            }
+        }
+
+        async function loadAppointments() {
+            const result = await window.Search.getUserAppointments(currentUser.id);
+            const container = document.getElementById('appointmentsList');
+            
+            if (!result.data || result.data.length === 0) {
+                container.innerHTML = '<div class="empty-state">No appointments yet</div>';
+                return;
+            }
+            
+            container.innerHTML = result.data.map(apt => `
+                <div class="appointment-item">
+                    <h4>${apt.title}</h4>
+                    <p>With Attorney ${apt.lawyers.users.first_name} ${apt.lawyers.users.last_name}</p>
+                    <p>Date: ${new Date(apt.appointment_date).toLocaleDateString()}</p>
+                    <div class="appointment-actions">
+                        <button class="btn-cancel" onclick="cancelAppointment('${apt.id}')">Cancel</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadDocuments() {
+            const result = await window.Search.getUserDocuments(currentUser.id);
+            const container = document.getElementById('documentsList');
+            
+            if (!result.data || result.data.length === 0) {
+                container.innerHTML = '<div class="empty-state">No documents yet</div>';
+                return;
+            }
+            
+            container.innerHTML = result.data.map(doc => `
+                <div class="document-item">
+                    <h4>${doc.document_name}</h4>
+                    <p>Uploaded: ${new Date(doc.uploaded_at).toLocaleDateString()}</p>
+                    <div class="document-actions">
+                        <button class="btn-download" onclick="window.open('${doc.file_url}')">Download</button>
+                        <button class="btn-delete" onclick="deleteDocument('${doc.id}', '${doc.file_url}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteDocument(docId, fileUrl) {
+            if (confirm('Delete this document permanently?')) {
+                const result = await window.Search.deleteDocument(docId, fileUrl);
+                if (result.success) {
+                    alert('Document deleted successfully');
+                    loadDocuments();
+                } else {
+                    alert('Failed to delete: ' + result.error);
+                }
+            }
+        }
+
+        // Document upload handler
+        document.getElementById('documentInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                // Check file size (max 10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File too large. Max 10MB allowed.');
+                    return;
+                }
+                
+                const btn = document.querySelector('button[onclick*="documentInput"]');
+                btn.disabled = true;
+                btn.textContent = 'Uploading...';
+                
+                const result = await window.Search.uploadDocument(currentUser.id, file, 'legal');
+                
+                if (result.success) {
+                    alert('Document uploaded successfully!');
+                    loadDocuments();
+                } else {
+                    alert('Upload failed: ' + result.error);
+                }
+                
+                btn.disabled = false;
+                btn.textContent = 'Upload Document';
+                e.target.value = '';
+            }
+        });
+
+        async function removePhoto() {
+            if (confirm('Remove profile photo? This will permanently delete the photo from storage.')) {
+                const result = await window.Auth.removeProfilePhoto(currentUser.id);
+                if (result.success) {
+                    document.getElementById('profilePhoto').innerHTML = '👤';
+                    alert('Photo removed successfully');
+                    location.reload();
+                } else {
+                    alert('Failed to remove photo: ' + result.error);
+                }
+            }
+        }
+
+        async function saveProfile() {
+            const fullname = document.getElementById('fullName').value;
+            const [firstName, ...lastNameParts] = fullname.split(' ');
+            const phone = document.getElementById('phone').value;
+            const dob = document.getElementById('dob').value;
+            
+            const result = await window.Auth.updateProfile(currentUser.id, {
+                first_name: firstName,
+                last_name: lastNameParts.join(' '),
+                phone_number: phone,
+                date_of_birth: dob
+            });
+            
+            if (result.success) {
+                alert('Profile updated successfully!');
+            }
+        }
+
+        async function updatePassword() {
+            const current = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            
+            if (newPass !== confirm) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            const result = await window.Auth.updatePassword(current, newPass);
+            if (result.success) {
+                alert('Password updated successfully!');
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }
+
+        async function cancelAppointment(id) {
+            if (confirm('Delete this appointment permanently? This action cannot be undone.')) {
+                console.log('Attempting to delete appointment:', id);
+                const result = await window.Search.deleteAppointment(id);
+                console.log('Delete result:', result);
+                
+                if (result.success) {
+                    alert('Appointment deleted successfully');
+                    await loadAppointments();
+                } else {
+                    alert('Failed to delete appointment: ' + (result.error || 'Unknown error. Check browser console.'));
+                }
+            }
+        }
+
+        async function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                await window.Auth.logout();
+                goToHome();
+            }
+        }
+
+        init();
+        
+        document.getElementById('photoInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            
+            if (file) {
+                const result = await window.Auth.updateProfilePhoto(currentUser.id, file);
+                
+                if (result.success) {
+                    alert('Photo updated successfully!');
+                    location.reload();
+                } else {
+                    alert('Upload failed: ' + (result.error || 'Unknown error'));
+                }
+            }
+        });
+    </script>
+</body>
+</html>

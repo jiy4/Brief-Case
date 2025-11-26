@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BRIEF-CASE</title>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3a3d4a 0%, #2c2f38 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            padding: 35px;
+            text-align: center;
+            color: white;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: #7a1a31;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .brand h1 {
+            font-size: 28px;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .brand p {
+            font-size: 13px;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .login-form {
+            padding: 45px 35px 35px;
+        }
+
+        .welcome-text {
+            font-size: 30px;
+            color: #2c2c2c;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .welcome-subtitle {
+            color: #666;
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            color: #999;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 15px 15px 48px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #7a1a31;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(122, 26, 49, 0.1);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 8px;
+        }
+
+        .forgot-password a {
+            color: #7a1a31;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .forgot-password a:hover {
+            color: #5d1425;
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(122, 26, 49, 0.4);
+            margin-top: 8px;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(122, 26, 49, 0.5);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 28px 0;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 15px;
+        }
+
+        .signup-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .signup-text a {
+            color: #7a1a31;
+            font-weight: 700;
+            text-decoration: none;
+            margin-left: 5px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .signup-text a:hover {
+            color: #5d1425;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+            border: 2px solid #ef5350;
+            font-weight: 500;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .feature-icons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 35px;
+            padding-top: 35px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .feature-icon {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .feature-icon svg {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 8px;
+            color: #7a1a31;
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 500px) {
+            .login-form {
+                padding: 40px 28px 30px;
+            }
+
+            .welcome-text {
+                font-size: 28px;
+            }
+
+            .header {
+                padding: 28px 25px;
+            }
+
+            .brand h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="header">
+           
+            <div class="brand">
+                <h1>BRIEF-CASE</h1>
+                <p>Your Case, Our Counsel</p>
+            </div>
+        </div>
+
+        <div class="login-form">
+            <h2 class="welcome-text">Welcome Back</h2>
+            <p class="welcome-subtitle">Sign in to access your account</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <input type="email" id="email" placeholder="you@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="forgot-password">
+                        <a onclick="handleForgotPassword()">Forgot Password?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+                <div class="error-message" id="errorMessage"></div>
+
+                <div class="divider"><span>or</span></div>
+
+                <div class="signup-text">
+                    Don't have an account?<a onclick="goToSignup()">Create Account</a>
+                </div>
+            </form>
+
+            <div class="feature-icons">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <div>Secure</div>
+                </div>
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <div>Trusted</div>
+                </div>
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                    <div>Fast</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Wait for DOM and scripts to be fully loaded
+        let isProcessing = false;
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Prevent multiple submissions
+            if (isProcessing) {
+                console.log('Login already in progress...');
+                return;
+            }
+
+            isProcessing = true;
+
+            // Clear previous errors
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.style.display = 'none';
+            errorMessage.textContent = '';
+
+            // Get form values
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Validation
+            if (!email || !window.SupabaseClient.isValidEmail(email)) {
+                showError('Please enter a valid email address');
+                isProcessing = false;
+                return;
+            }
+
+            if (!password) {
+                showError('Please enter your password');
+                isProcessing = false;
+                return;
+            }
+
+            // Disable button and show loading
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="loading-spinner"></span>Signing In...';
+
+            try {
+                // Login with timeout
+                console.log('Attempting login...');
+                const result = await Promise.race([
+                    window.Auth.login(email, password),
+                    new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Login timed out. Please check your connection.')), 20000)
+                    )
+                ]);
+
+                if (result.success) {
+                    console.log('Login successful, redirecting...');
+                    // Short delay before redirect to ensure session is saved
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 500);
+                } else {
+                    showError(result.error || 'Invalid email or password');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = 'Sign In';
+                    isProcessing = false;
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(error.message || 'Login failed. Please try again.');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Sign In';
+                isProcessing = false;
+            }
+        });
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function goToSignup() {
+            window.location.href = 'signup.html';
+        }
+
+        async function handleForgotPassword() {
+            const email = prompt('Enter your email address to reset password:');
+            
+            if (email && window.SupabaseClient.isValidEmail(email)) {
+                try {
+                    const result = await Promise.race([
+                        window.Auth.resetPassword(email),
+                        new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Request timed out')), 15000)
+                        )
+                    ]);
+                    
+                    if (result.success) {
+                        alert('Password reset email sent! Please check your inbox.');
+                    } else {
+                        alert('Error: ' + result.error);
+                    }
+                } catch (error) {
+                    alert('Failed to send reset email. Please try again.');
+                }
+            } else if (email) {
+                alert('Please enter a valid email address');
+            }
+        }
+
+        // Check if already logged in (with timeout)
+        async function checkAuth() {
+            try {
+                const isLoggedIn = await Promise.race([
+                    window.SupabaseClient.isAuthenticated(),
+                    new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Auth check timed out')), 8000)
+                    )
+                ]);
+                
+                if (isLoggedIn) {
+                    console.log('Already logged in, redirecting...');
+                    window.location.href = 'home.html';
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+                // Continue to show login page if check fails
+            }
+        }
+
+        // Wait for everything to be ready before checking auth
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                checkAuth();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

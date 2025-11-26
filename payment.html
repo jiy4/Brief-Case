@@ -4,494 +4,513 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment - BRIEF-CASE</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #9a9a9a;
-            min-height: 100vh;
-        }
-
-        /* Top Navigation */
-        .top-nav {
-            background: #3a3d4a;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid #2a2c35;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .donate-btn {
-            background: #7a1a31;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .nav-center {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .logo-nav {
-            width: 60px;
-            height: 50px;
-        }
-
-        .logo-nav img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .brand-nav h1 {
-            font-size: 18px;
-            color: white;
-            font-weight: bold;
-        }
-
-        .brand-nav p {
-            font-size: 11px;
-            color: #ccc;
-            font-style: italic;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-icon-nav {
-            width: 32px;
-            height: 32px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-       .search-box {
-    background: white;
-    border-radius: 20px;
-    padding: 6px 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;              /* FIX */
-}
-
-.search-box input {
-    border: none;
-    outline: none;
-    font-size: 13px;
-    flex: 1;
-}
-
-        .translate-icon {
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        /* Page Header */
-        .page-header {
-            background: white;
-            padding: 18px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid #ddd;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .back-arrow {
-            font-size: 20px;
-            cursor: pointer;
-            color: #333;
-        }
-
-        .page-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .user-icon {
-            font-size: 32px;
-            cursor: pointer;
-        }
-
-        /* Main Content */
-        .main-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-            min-height: calc(100vh - 150px);
-        }
-
-        .payment-container {
-            background: #b8b8b8;
-            border-radius: 12px;
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .payment-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #1a1a1a;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        /* Payment Methods */
-        .payment-methods {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .payment-method {
-            background: #d4d4d4;
-            border: 2px solid #666;
-            border-radius: 8px;
-            padding: 20px 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .payment-method:hover {
-            border-color: #7a1a31;
-            background: #e0e0e0;
-        }
-
-        .payment-method.selected {
-            border-color: #7a1a31;
-            background: #e8d0d6;
-        }
-
-        .payment-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .payment-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-
-        /* Amount Section */
-        .amount-section {
-            margin-bottom: 30px;
-        }
-
-        .amount-label {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 10px;
-        }
-
-        .amount-display {
-            background: #d4d4d4;
-            border: 2px solid #666;
-            border-radius: 8px;
-            padding: 18px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #1a1a1a;
-        }
-
-        /* Transaction Summary */
-        .transaction-summary {
-            background: white;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-
-        .summary-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1a1a1a;
-            margin-bottom: 20px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 14px;
-        }
-
-        .summary-row:last-child {
-            border-bottom: none;
-        }
-
-        .summary-label {
-            color: #333;
-        }
-
-        .summary-value {
-            color: #1a1a1a;
-            font-weight: 600;
-        }
-
-        .total-row {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px solid #333;
-            font-weight: bold;
-        }
-
-        .total-row .summary-label {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .total-row .summary-value {
-            font-size: 16px;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            padding: 16px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .btn-confirm {
-            background: #7a1a31;
-            color: white;
-            border-color: #7a1a31;
-        }
-
-        .btn-confirm:hover {
-            background: #5d1425;
-        }
-
-        .btn-download {
-            background: #d4d4d4;
-            color: #7a1a31;
-            border-color: #7a1a31;
-        }
-
-        .btn-download:hover {
-            background: #e0e0e0;
-        }
-
-        /* Security Notice */
-        .security-notice {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #1a1a1a;
-        }
-
-        .security-icon {
-            font-size: 16px;
-        }
-
-        @media (max-width: 768px) {
-            .payment-methods {
-                grid-template-columns: 1fr;
-            }
-
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-
-            .payment-container {
-                padding: 25px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #9a9a9a; min-height: 100vh; }
+        .top-nav { background: #3a3d4a; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .donate-btn { background: #7a1a31; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
+        .logo-section { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: center; }
+        .logo { font-size: 32px; }
+        .brand-text h1 { color: white; font-size: 18px; }
+        .brand-text p { color: #ccc; font-size: 11px; }
+        .user-icon { width: 32px; height: 32px; background: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .page-header { background: white; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .back-arrow { font-size: 20px; cursor: pointer; margin-right: 10px; }
+        .main-content { display: flex; justify-content: center; padding: 40px 20px; }
+        .payment-container { background: #b8b8b8; border-radius: 12px; padding: 40px; max-width: 600px; width: 100%; }
+        .payment-title { font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 30px; }
+        .payment-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
+        .payment-method { background: #d4d4d4; border: 2px solid #666; border-radius: 8px; padding: 20px 15px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .payment-method:hover { border-color: #7a1a31; background: #e0e0e0; }
+        .payment-method.selected { border-color: #7a1a31; background: #e8d0d6; }
+        .payment-icon { font-size: 32px; margin-bottom: 8px; }
+        .payment-label { font-size: 14px; font-weight: 600; }
+        .card-details { background: white; border-radius: 8px; padding: 25px; margin-bottom: 25px; display: none; }
+        .card-details.show { display: block; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .form-group input:focus { outline: none; border-color: #7a1a31; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .error-text { color: #d32f2f; font-size: 12px; margin-top: 5px; display: none; }
+        .amount-section { margin-bottom: 30px; }
+        .amount-label { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+        .amount-display { background: #d4d4d4; border: 2px solid #666; border-radius: 8px; padding: 18px; text-align: center; font-size: 24px; font-weight: bold; }
+        .transaction-summary { background: white; border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .summary-title { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
+        .summary-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e0e0e0; }
+        .summary-row:last-child { border-bottom: none; }
+        .total-row { margin-top: 15px; padding-top: 15px; border-top: 2px solid #333; font-weight: bold; }
+        .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .btn { padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; border: none; }
+        .btn-confirm { background: #7a1a31; color: white; }
+        .btn-confirm:disabled { background: #999; cursor: not-allowed; }
+        .btn-download { background: #d4d4d4; color: #7a1a31; border: 2px solid #7a1a31; }
+        .security-notice { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; }
     </style>
 </head>
 <body>
-    <!-- Top Navigation -->
     <div class="top-nav">
-        <div class="nav-left">
-            <button class="donate-btn">Donate</button>
-        </div>
-        <div class="nav-center">
-            <div class="logo-nav">
-                 <img src="file:///C:/Users/HP/OneDrive/Desktop/finalized%20wireframes/Brief-Case%20Logo.png" alt="Brief-Case Logo">
-            </div>
-            <div class="brand-nav">
+        <button class="donate-btn" onclick="window.location.href='donate.html'">Donate</button>
+        <div class="logo-section">
+            
+            <div class="brand-text">
                 <h1>brief-case</h1>
                 <p>your case, our counsel</p>
             </div>
         </div>
-        <div class="nav-right">
-            <div class="user-icon-nav">👤</div>
-            <div class="search-box">
-                <span>🔍</span>
-                <input type="text" placeholder="">
-            </div>
-            <span class="translate-icon">🌐</span>
-        </div>
+        <div class="user-icon" onclick="goToProfile()">👤</div>
     </div>
 
-    <!-- Page Header -->
     <div class="page-header">
-        <div class="header-left">
-            <span class="back-arrow">←</span>
-            <h1 class="page-title">Payment</h1>
+        <div>
+            <span class="back-arrow" onclick="goBack()">←</span>
+            <span style="font-size:20px;">Payment</span>
         </div>
-        <span class="user-icon">👤</span>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="payment-container">
             <h2 class="payment-title">Select Payment Method</h2>
 
-            <!-- Payment Methods -->
             <div class="payment-methods">
-                <div class="payment-method selected">
+                <div class="payment-method selected" data-method="card">
                     <div class="payment-icon">💳</div>
                     <div class="payment-label">Credit/Debit Card</div>
                 </div>
-                <div class="payment-method">
-                    <div class="payment-icon">🏛️</div>
+                <div class="payment-method" data-method="bank">
+                    <div class="payment-icon">🏦</div>
                     <div class="payment-label">Bank Transfer</div>
                 </div>
-                <div class="payment-method">
-                    <div class="payment-icon">🅿️</div>
+                <div class="payment-method" data-method="paypak">
+                    <div class="payment-icon">🎁</div>
                     <div class="payment-label">PayPak</div>
                 </div>
             </div>
 
-            <!-- Amount to Pay -->
+            <div class="card-details show" id="cardDetailsSection">
+                <h3 style="margin-bottom:20px;">Card Details</h3>
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                    <div class="error-text" id="cardNumberError">Invalid card number</div>
+                </div>
+                <div class="form-group">
+                    <label>Cardholder Name</label>
+                    <input type="text" id="cardName" placeholder="John Doe">
+                    <div class="error-text" id="cardNameError">Name is required</div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Expiry Date (MM/YY)</label>
+                        <input type="text" id="expiryDate" placeholder="12/25" maxlength="5">
+                        <div class="error-text" id="expiryError">Invalid expiry date</div>
+                    </div>
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="text" id="cvv" placeholder="123" maxlength="3">
+                        <div class="error-text" id="cvvError">Invalid CVV</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="amount-section">
                 <div class="amount-label">Amount to Pay</div>
-                <div class="amount-display">Rs. 12000.00</div>
+                <div class="amount-display" id="totalAmount">Rs. 0.00</div>
             </div>
 
-            <!-- Transaction Summary -->
             <div class="transaction-summary">
                 <h3 class="summary-title">Transaction Summary</h3>
-                
-                <div class="summary-row">
-                    <span class="summary-label">Lawyer Name:</span>
-                    <span class="summary-value">Saul Goodman</span>
-                </div>
-                
-                <div class="summary-row">
-                    <span class="summary-label">Service Type:</span>
-                    <span class="summary-value">Contract Review</span>
-                </div>
-                
-                <div class="summary-row">
-                    <span class="summary-label">Consultation Fee:</span>
-                    <span class="summary-value">Rs. 5000.00</span>
-                </div>
-                
-                <div class="summary-row">
-                    <span class="summary-label">Service Fee:</span>
-                    <span class="summary-value">Rs. 7000.00</span>
-                </div>
-                
-                <div class="summary-row total-row">
-                    <span class="summary-label">Total:</span>
-                    <span class="summary-value">Rs. 12000.00</span>
+                <div id="summaryContent">
+                    <!-- Will be populated dynamically -->
                 </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="action-buttons">
-                <button class="btn btn-confirm">Confirm Payment</button>
-                <button class="btn btn-download">Download Receipt</button>
+                <button class="btn btn-confirm" onclick="confirmPayment()" id="confirmBtn">Confirm Payment</button>
+                <button class="btn btn-download" onclick="downloadReceipt()">Download Receipt</button>
             </div>
 
-            <!-- Security Notice -->
             <div class="security-notice">
-                <span class="security-icon">🛡️</span>
+                <span>🔒</span>
                 <span>Secure Payment Processing</span>
             </div>
         </div>
     </div>
 
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/navigation.js"></script>
     <script>
+        let selectedMethod = 'card';
+        let paymentData = null;
+        let currentUser = null;
+        let isDonation = false;
+
         // Payment method selection
-        const paymentMethods = document.querySelectorAll('.payment-method');
-        
-        paymentMethods.forEach(method => {
+        document.querySelectorAll('.payment-method').forEach(method => {
             method.addEventListener('click', function() {
-                // Remove selected class from all methods
-                paymentMethods.forEach(m => m.classList.remove('selected'));
-                // Add selected class to clicked method
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
                 this.classList.add('selected');
+                selectedMethod = this.dataset.method;
+                
+                // Show/hide card details
+                if (selectedMethod === 'card') {
+                    document.getElementById('cardDetailsSection').classList.add('show');
+                } else {
+                    document.getElementById('cardDetailsSection').classList.remove('show');
+                }
             });
         });
 
-        // Confirm Payment button
-        const confirmBtn = document.querySelector('.btn-confirm');
-        confirmBtn.addEventListener('click', function() {
-            const selectedMethod = document.querySelector('.payment-method.selected .payment-label').textContent;
-            alert(`Processing payment of Rs. 12000.00 via ${selectedMethod}...`);
+        // Card number formatting
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
         });
 
-        // Download Receipt button
-        const downloadBtn = document.querySelector('.btn-download');
-        downloadBtn.addEventListener('click', function() {
-            alert('Downloading receipt...');
+        // Expiry date formatting
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
         });
 
-        // Back arrow
-        const backArrow = document.querySelector('.back-arrow');
-        backArrow.addEventListener('click', function() {
+        // CVV only numbers
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        async function init() {
+            currentUser = await window.SupabaseClient.getCurrentUser();
+
+            const pageData = window.Navigation.getPageData();
+            
+            if (!pageData) {
+                alert('No payment data found');
+                goBack();
+                return;
+            }
+
+            // Check if this is a donation or appointment
+            isDonation = pageData.isDonation || false;
+
+            if (isDonation) {
+                // Handle donation payment
+                await setupDonationPayment(pageData);
+            } else {
+                // Handle appointment payment
+                await setupAppointmentPayment(pageData);
+            }
+        }
+
+        async function setupDonationPayment(donationData) {
+            const amount = donationData.amount;
+            const currency = donationData.currency || 'PKR';
+
+            document.getElementById('totalAmount').textContent = 
+                `${currency} ${amount.toLocaleString()}`;
+            
+            // Build summary
+            const summaryContent = document.getElementById('summaryContent');
+            summaryContent.innerHTML = `
+                <div class="summary-row">
+                    <span>Type:</span>
+                    <span><strong>Donation</strong></span>
+                </div>
+                <div class="summary-row">
+                    <span>Donor:</span>
+                    <span>${donationData.donorName || 'Anonymous'}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Amount:</span>
+                    <span>${currency} ${amount.toLocaleString()}</span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Total:</span>
+                    <span>${currency} ${amount.toLocaleString()}</span>
+                </div>
+            `;
+            
+            paymentData = {
+                isDonation: true,
+                amount: amount,
+                currency: currency,
+                donorName: donationData.donorName || 'Anonymous',
+                donorEmail: donationData.donorEmail
+            };
+        }
+
+        async function setupAppointmentPayment(appointmentData) {
+            if (!currentUser) {
+                alert('Please login first');
+                goToLogin();
+                return;
+            }
+
+            const lawyerResult = await window.Search.getLawyerDetails(appointmentData.lawyerId);
+            
+            if (lawyerResult.success) {
+                const lawyer = lawyerResult.data;
+                const consultationFee = lawyer.consultation_fee || 5000;
+                const serviceFee = Math.round(consultationFee * 0.15);
+                const total = consultationFee + serviceFee;
+                
+                document.getElementById('totalAmount').textContent = 
+                    `Rs. ${total.toLocaleString()}`;
+                
+                // Build summary
+                const summaryContent = document.getElementById('summaryContent');
+                summaryContent.innerHTML = `
+                    <div class="summary-row">
+                        <span>Lawyer Name:</span>
+                        <span>${lawyer.users.first_name} ${lawyer.users.last_name}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Service Type:</span>
+                        <span>Consultation</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Consultation Fee:</span>
+                        <span>Rs. ${consultationFee.toLocaleString()}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Service Fee (15%):</span>
+                        <span>Rs. ${serviceFee.toLocaleString()}</span>
+                    </div>
+                    <div class="summary-row total-row">
+                        <span>Total:</span>
+                        <span>Rs. ${total.toLocaleString()}</span>
+                    </div>
+                `;
+                
+                paymentData = {
+                    isDonation: false,
+                    consultationFee,
+                    serviceFee,
+                    total,
+                    lawyerName: `${lawyer.users.first_name} ${lawyer.users.last_name}`,
+                    appointmentId: appointmentData.appointmentId,
+                    lawyerId: appointmentData.lawyerId
+                };
+            }
+        }
+
+        function validateCard() {
+            let isValid = true;
+
+            // Card number validation
+            const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+            if (cardNumber.length < 13 || cardNumber.length > 19 || !/^\d+$/.test(cardNumber)) {
+                document.getElementById('cardNumberError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('cardNumberError').style.display = 'none';
+            }
+
+            // Card name validation
+            const cardName = document.getElementById('cardName').value.trim();
+            if (!cardName || cardName.length < 3) {
+                document.getElementById('cardNameError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('cardNameError').style.display = 'none';
+            }
+
+            // Expiry date validation
+            const expiry = document.getElementById('expiryDate').value;
+            const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+            if (!expiryRegex.test(expiry)) {
+                document.getElementById('expiryError').style.display = 'block';
+                isValid = false;
+            } else {
+                const [month, year] = expiry.split('/');
+                const expiryDate = new Date(2000 + parseInt(year), parseInt(month));
+                const today = new Date();
+                if (expiryDate < today) {
+                    document.getElementById('expiryError').style.display = 'block';
+                    document.getElementById('expiryError').textContent = 'Card has expired';
+                    isValid = false;
+                } else {
+                    document.getElementById('expiryError').style.display = 'none';
+                }
+            }
+
+            // CVV validation
+            const cvv = document.getElementById('cvv').value;
+            if (!/^\d{3}$/.test(cvv)) {
+                document.getElementById('cvvError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('cvvError').style.display = 'none';
+            }
+
+            return isValid;
+        }
+
+        async function confirmPayment() {
+            if (!paymentData) return;
+
+            // Validate card details if card payment
+            if (selectedMethod === 'card') {
+                if (!validateCard()) {
+                    alert('Please fix the errors in card details');
+                    return;
+                }
+            }
+            
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+            
+            // Generate transaction ID
+            const transactionId = 'TXN-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+            
+            if (isDonation) {
+                // Handle donation payment
+                paymentData.transactionId = transactionId;
+                paymentData.paymentDate = new Date().toLocaleString();
+                paymentData.paymentMethod = selectedMethod;
+                
+                alert('Thank you for your generous donation! Your support helps us provide accessible legal services.');
+                
+                // Redirect to home after donation
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } else {
+                // Handle appointment payment
+                const { data, error } = await window.SupabaseClient.supabase
+                    .from('appointments')
+                    .update({ 
+                        payment_status: 'paid',
+                        payment_method: selectedMethod,
+                        payment_amount: paymentData.total,
+                        transaction_id: transactionId,
+                        payment_date: new Date().toISOString()
+                    })
+                    .eq('id', paymentData.appointmentId)
+                    .select();
+                
+                if (error) {
+                    console.error('Payment save error:', error);
+                    alert('Payment failed: ' + error.message);
+                    btn.disabled = false;
+                    btn.textContent = 'Confirm Payment';
+                    return;
+                }
+                
+                paymentData.transactionId = transactionId;
+                paymentData.paymentDate = new Date().toLocaleString();
+                paymentData.paymentMethod = selectedMethod;
+                
+                alert('Payment successful! Your appointment is confirmed.');
+                
+                setTimeout(() => {
+                    window.location.href = 'client-profile.html';
+                }, 1000);
+            }
+        }
+
+        function downloadReceipt() {
+            if (!paymentData) {
+                alert('No payment data available');
+                return;
+            }
+            
+            let receipt;
+            
+            if (isDonation) {
+                receipt = `
+=====================================
+       BRIEF-CASE RECEIPT
+         DONATION RECEIPT
+=====================================
+
+Transaction ID: ${paymentData.transactionId || 'TXN-' + Date.now()}
+Date: ${paymentData.paymentDate || new Date().toLocaleString()}
+
+-------------------------------------
+DONOR INFORMATION
+-------------------------------------
+Name: ${paymentData.donorName || 'Anonymous'}
+${paymentData.donorEmail ? 'Email: ' + paymentData.donorEmail : ''}
+
+-------------------------------------
+DONATION DETAILS
+-------------------------------------
+Amount:           ${paymentData.currency || 'PKR'} ${paymentData.amount.toLocaleString()}
+Payment Method:   ${paymentData.paymentMethod || selectedMethod}
+Status:           PAID
+
+=====================================
+Thank you for your generous donation!
+Your support helps us provide 
+accessible legal services to everyone.
+
+Brief-Case - Your case, our counsel.
+=====================================
+                `;
+            } else {
+                receipt = `
+=====================================
+       BRIEF-CASE RECEIPT
+=====================================
+
+Transaction ID: ${paymentData.transactionId || 'TXN-' + Date.now()}
+Date: ${paymentData.paymentDate || new Date().toLocaleString()}
+
+-------------------------------------
+PAYMENT DETAILS
+-------------------------------------
+Lawyer: ${paymentData.lawyerName}
+Service: Legal Consultation
+
+Consultation Fee:  Rs. ${paymentData.consultationFee.toLocaleString()}
+Service Fee (15%): Rs. ${paymentData.serviceFee.toLocaleString()}
+                  -----------------
+Total Amount:      Rs. ${paymentData.total.toLocaleString()}
+
+Payment Method: ${paymentData.paymentMethod || selectedMethod}
+Status: PAID
+
+=====================================
+Thank you for using Brief-Case!
+Your case, our counsel.
+=====================================
+                `;
+            }
+            
+            const blob = new Blob([receipt], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `receipt_${paymentData.transactionId || Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function goBack() {
             window.history.back();
-        });
+        }
+
+        async function goToProfile() {
+            const userType = localStorage.getItem('userType');
+            if (userType === 'lawyer') {
+                window.location.href = 'lawyer-profile-settings.html';
+            } else {
+                window.location.href = 'client-profile.html';
+            }
+        }
+
+        init();
     </script>
 </body>
 </html>

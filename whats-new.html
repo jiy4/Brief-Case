@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What's New - Brief-Case</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        .top-bar { background: #3a3d4a; padding: 10px 50px; display: flex; justify-content: space-between; align-items: center; }
+        .donate-btn { background: #7a1a31; color: white; padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        .logo-section { display: flex; align-items: center; gap: 15px; flex: 1; justify-content: center; }
+        .logo { font-size: 40px; }
+        .brand-text h1 { color: white; font-size: 18px; }
+        .brand-text p { color: #b0b0b0; font-size: 12px; }
+        nav { background: white; padding: 15px 50px; display: flex; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        nav a { text-decoration: none; color: #333; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        nav a:hover { color: #7a1a31; background: #f5f5f5; }
+        .hero { background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%); color: white; padding: 60px 50px; text-align: center; }
+        .hero h1 { font-size: 42px; margin-bottom: 15px; }
+        .hero p { font-size: 18px; }
+        .content { max-width: 1000px; margin: 60px auto; padding: 0 50px; }
+        .update-card { background: white; border-radius: 10px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-left: 5px solid #7a1a31; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .update-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+        .update-date { font-size: 14px; color: #7a1a31; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .update-card h2 { font-size: 24px; color: #2c2c2c; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; }
+        .update-card p { font-size: 16px; line-height: 1.6; color: #555; margin-bottom: 10px; }
+        .update-card ul { margin-left: 20px; margin-top: 10px; }
+        .update-card li { font-size: 15px; color: #666; margin-bottom: 8px; line-height: 1.5; }
+        .badge { display: inline-block; background: #7a1a31; color: white; padding: 5px 14px; border-radius: 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+        .badge.new { background: #2e7d32; }
+        .badge.improved { background: #1976d2; }
+        .badge.fixed { background: #f57c00; }
+        .badge.upcoming { background: #7a1a31; }
+        
+        /* Feature Icon Styles */
+        .feature-icon { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 8px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .icon-launch { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); }
+        .icon-mobile { background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%); }
+        .icon-video { background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); }
+        .icon-ai { background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); }
+        .icon-docs { background: linear-gradient(135deg, #f57c00 0%, #e65100 100%); }
+        .icon-improve { background: linear-gradient(135deg, #00796b 0%, #004d40 100%); }
+        
+        /* Feedback Section */
+        .feedback-section {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .feedback-section h3 {
+            color: #2e7d32;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+        .feedback-section p {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 25px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .feedback-btn {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+        }
+        .feedback-btn:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(46, 125, 50, 0.4);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .modal-header h3 {
+            font-size: 26px;
+            color: #2c2c2c;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+            transition: color 0.3s;
+        }
+        .modal-close:hover { color: #333; }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2e7d32;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .submit-btn {
+            width: 100%;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover { background: #1b5e20; }
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid #2e7d32;
+        }
+        .error-message {
+            background: #ffebee;
+            color: #d32f2f;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button class="donate-btn" onclick="goToDonate()">Donate</button>
+        <div class="logo-section">
+            <div class="logo"></div>
+            <div class="brand-text">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div style="width:100px;"></div>
+    </div>
+
+    <nav>
+        <a onclick="goToHome()">Home</a>
+        <a onclick="goToLawyerSearch()">Lawyer Search</a>
+        <a onclick="goToAbout()">About</a>
+        <a onclick="goToWhatsNew()">What's New</a>
+    </nav>
+
+    <div class="hero">
+        <h1>What's New at Brief-Case</h1>
+        <p>Stay updated with our latest features, improvements, and updates</p>
+    </div>
+
+    <div class="content">
+        <div class="update-card">
+            <div class="update-date">October 2025</div>
+            <h2>
+                <span class="feature-icon icon-launch">🚀</span>
+                Platform Launch
+                <span class="badge new">NEW</span>
+            </h2>
+            <p>We're excited to announce the official launch of Brief-Case! Our platform is now live and ready to connect you with trusted legal professionals.</p>
+            <ul>
+                <li><strong>Smart Lawyer Search:</strong> Find attorneys by specialty, location, rating, and consultation fees</li>
+                <li><strong>Online Booking:</strong> Schedule consultations with lawyers in just a few clicks</li>
+                <li><strong>Secure Messaging:</strong> Communicate directly with your lawyer through encrypted messages</li>
+                <li><strong>Document Management:</strong> Upload and share legal documents securely</li>
+                <li><strong>Multiple Payment Options:</strong> Pay with credit/debit cards, bank transfers, or PayPak</li>
+            </ul>
+        </div>
+
+        <div class="update-card">
+            <div class="update-date">November 2025</div>
+            <h2>
+                <span class="feature-icon icon-mobile">📱</span>
+                Mobile App Launch
+                <span class="badge upcoming">UPCOMING</span>
+            </h2>
+            <p>Access Brief-Case on the go with our upcoming mobile applications for iOS and Android.</p>
+            <ul>
+                <li>Native mobile experience for both iPhone and Android devices</li>
+                <li>Push notifications for messages and appointment reminders</li>
+                <li>Offline document viewing</li>
+                <li>Biometric authentication for enhanced security</li>
+            </ul>
+        </div>
+
+        <div class="update-card">
+            <div class="update-date">December 2025</div>
+            <h2>
+                <span class="feature-icon icon-video">🎥</span>
+                Video Consultations
+                <span class="badge upcoming">UPCOMING</span>
+            </h2>
+            <p>Meet with your lawyer face-to-face without leaving home through our integrated video calling feature.</p>
+            <ul>
+                <li>HD video and audio quality</li>
+                <li>Screen sharing for document review</li>
+                <li>Session recording (with consent)</li>
+                <li>No additional software required</li>
+            </ul>
+        </div>
+
+        <div class="update-card">
+            <div class="update-date">Q1 2026</div>
+            <h2>
+                <span class="feature-icon icon-ai">🤖</span>
+                AI-Powered Lawyer Matching
+                <span class="badge improved">ENHANCED</span>
+            </h2>
+            <p>We're developing an intelligent matching system that will recommend the best lawyers for your specific legal needs based on:</p>
+            <ul>
+                <li>Case type and complexity</li>
+                <li>Lawyer specialization and experience</li>
+                <li>Success rates in similar cases</li>
+                <li>Client reviews and ratings</li>
+                <li>Budget and location preferences</li>
+            </ul>
+        </div>
+
+        <div class="update-card">
+            <div class="update-date">Q2 2026</div>
+            <h2>
+                <span class="feature-icon icon-docs">📋</span>
+                Legal Document Templates
+                <span class="badge upcoming">UPCOMING</span>
+            </h2>
+            <p>Access a library of customizable legal document templates for common needs:</p>
+            <ul>
+                <li>Contracts and agreements</li>
+                <li>Power of attorney documents</li>
+                <li>Wills and estate planning</li>
+                <li>Business formation documents</li>
+                <li>All reviewed by qualified attorneys</li>
+            </ul>
+        </div>
+
+        <div class="update-card">
+            <div class="update-date">Ongoing</div>
+            <h2>
+                <span class="feature-icon icon-improve">⚙️</span>
+                Platform Improvements
+                <span class="badge improved">CONTINUOUS</span>
+            </h2>
+            <p>We're constantly working to improve your experience:</p>
+            <ul>
+                <li>Enhanced search performance and accuracy</li>
+                <li>Faster page load times</li>
+                <li>Improved mobile responsiveness</li>
+                <li>Better security and privacy protections</li>
+                <li>Regular bug fixes and stability improvements</li>
+            </ul>
+        </div>
+
+        <div class="feedback-section">
+            <h3>💡 Have a Suggestion?</h3>
+            <p>We'd love to hear your ideas for new features and improvements! Your feedback helps us build a better Brief-Case for everyone.</p>
+            <button class="feedback-btn" onclick="openFeedbackModal()">Submit Feedback</button>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal" id="feedbackModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Submit Feedback</h3>
+                <button class="modal-close" onclick="closeFeedbackModal()">×</button>
+            </div>
+            
+            <div class="success-message" id="successMessage">
+                ✓ Thank you! Your feedback has been submitted successfully.
+            </div>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label for="feedbackName">Your Name</label>
+                    <input type="text" id="feedbackName" placeholder="Enter your name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="feedbackEmail">Email Address</label>
+                    <input type="email" id="feedbackEmail" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="feedbackMessage">Your Feedback</label>
+                    <textarea id="feedbackMessage" placeholder="Share your ideas, suggestions, or report any issues..." required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/supabase-client.js"></script>
+    <script>
+        function openFeedbackModal() {
+            document.getElementById('feedbackModal').classList.add('show');
+            document.getElementById('feedbackForm').reset();
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedbackModal').classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('feedbackModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFeedbackModal();
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('feedbackName').value.trim();
+            const email = document.getElementById('feedbackEmail').value.trim();
+            const message = document.getElementById('feedbackMessage').value.trim();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMsg = document.getElementById('errorMessage');
+            const successMsg = document.getElementById('successMessage');
+            
+            // Hide previous messages
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            try {
+                // Get current user if logged in
+                let userId = null;
+                const currentUser = await window.SupabaseClient.getCurrentUser();
+                if (currentUser) {
+                    userId = currentUser.id;
+                }
+                
+                // Submit feedback to Supabase
+                const { data, error } = await window.SupabaseClient.supabase
+                    .from('feedback')
+                    .insert({
+                        user_id: userId,
+                        name: name,
+                        email: email,
+                        message: message,
+                        submitted_at: new Date().toISOString()
+                    });
+                
+                if (error) throw error;
+                
+                // Show success message
+                successMsg.style.display = 'block';
+                document.getElementById('feedbackForm').reset();
+                
+                // Close modal after 2 seconds
+                setTimeout(() => {
+                    closeFeedbackModal();
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                errorMsg.textContent = 'Failed to submit feedback. Please try again.';
+                errorMsg.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Feedback';
+            }
+        });
+    </script>
+</body>
+</html>

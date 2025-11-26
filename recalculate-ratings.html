@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recalculate Ratings - Brief Case Admin</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #2c2c2c;
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(122, 26, 49, 0.3);
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(122, 26, 49, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            display: none;
+        }
+
+        #results.show {
+            display: block;
+        }
+
+        .result-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #7a1a31;
+        }
+
+        .result-item.success {
+            border-color: #4caf50;
+        }
+
+        .result-item.error {
+            border-color: #f44336;
+        }
+
+        .success-message {
+            color: #4caf50;
+            font-weight: 600;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-weight: 600;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .progress {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recalculate All Lawyer Ratings</h1>
+        <p>
+            This utility will recalculate the average rating and total review count for all lawyers 
+            in the system based on their actual reviews in the database. This is useful if ratings 
+            are showing incorrect values.
+        </p>
+
+        <button class="btn" id="recalculateBtn" onclick="recalculateAllRatings()">
+            Start Recalculation
+        </button>
+
+        <div class="progress" id="progress"></div>
+
+        <div id="results"></div>
+    </div>
+
+    <script src="js/supabase-client.js"></script>
+    <script src="js/search.js"></script>
+    <script>
+        async function recalculateAllRatings() {
+            const btn = document.getElementById('recalculateBtn');
+            const results = document.getElementById('results');
+            const progress = document.getElementById('progress');
+            
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+            results.innerHTML = '';
+            results.classList.remove('show');
+            progress.textContent = 'Fetching all lawyers...';
+
+            try {
+                // Get all lawyers
+                const { data: lawyers, error: lawyersError } = await window.SupabaseClient.supabase
+                    .from('lawyers')
+                    .select('id, users!inner(first_name, last_name)');
+
+                if (lawyersError) throw lawyersError;
+
+                if (!lawyers || lawyers.length === 0) {
+                    progress.innerHTML = '<div class="error-message">No lawyers found in database</div>';
+                    btn.disabled = false;
+                    btn.textContent = 'Start Recalculation';
+                    return;
+                }
+
+                console.log(`Found ${lawyers.length} lawyers`);
+                progress.textContent = `Found ${lawyers.length} lawyers. Recalculating ratings...`;
+
+                results.classList.add('show');
+                let successCount = 0;
+                let errorCount = 0;
+
+                // Process each lawyer
+                for (let i = 0; i < lawyers.length; i++) {
+                    const lawyer = lawyers[i];
+                    progress.textContent = `Processing ${i + 1} of ${lawyers.length}...`;
+
+                    try {
+                        // Get all reviews for this lawyer
+                        const { data: reviews, error: reviewError } = await window.SupabaseClient.supabase
+                            .from('reviews')
+                            .select('rating')
+                            .eq('lawyer_id', lawyer.id);
+
+                        if (reviewError) throw reviewError;
+
+                        let averageRating = 5.0; // Default
+                        let totalReviews = 0;
+
+                        if (reviews && reviews.length > 0) {
+                            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+                            averageRating = Math.round((totalRating / reviews.length) * 10) / 10;
+                            totalReviews = reviews.length;
+                        }
+
+                        // Update lawyer record
+                        const { error: updateError } = await window.SupabaseClient.supabase
+                            .from('lawyers')
+                            .update({
+                                average_rating: averageRating,
+                                total_reviews: totalReviews
+                            })
+                            .eq('id', lawyer.id);
+
+                        if (updateError) throw updateError;
+
+                        results.innerHTML += `
+                            <div class="result-item success">
+                                <strong>${lawyer.users.first_name} ${lawyer.users.last_name}</strong><br>
+                                Rating: ${averageRating}/5 (${totalReviews} reviews)
+                            </div>
+                        `;
+                        successCount++;
+
+                    } catch (error) {
+                        console.error(`Error processing lawyer ${lawyer.id}:`, error);
+                        results.innerHTML += `
+                            <div class="result-item error">
+                                <strong>${lawyer.users.first_name} ${lawyer.users.last_name}</strong><br>
+                                Error: ${error.message}
+                            </div>
+                        `;
+                        errorCount++;
+                    }
+                }
+
+                progress.innerHTML = `
+                    <div class="success-message">
+                        ✅ Complete! Updated ${successCount} lawyers${errorCount > 0 ? `, ${errorCount} errors` : ''}
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('Error:', error);
+                progress.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Recalculate Again';
+            }
+        }
+    </script>
+</body>
+</html>

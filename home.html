@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brief-Case - Dashboard</title>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .top-bar {
+            background-color: #3a3d4a;
+            padding: 10px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .donate-btn {
+            background-color: #7a1a31;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            background: transparent;
+            border-radius: 8px;
+        }
+
+        .brand-text h1 {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-text p {
+            color: #b0b0b0;
+            font-size: 12px;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            border: 2px solid white;
+        }
+
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .search-box {
+            background: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 150px;
+        }
+
+        nav {
+            background-color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            padding: 10px 20px;
+            transition: all 0.3s;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: #7a1a31;
+            background: #f5f5f5;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white;
+            padding: 50px 50px;
+        }
+
+        .welcome-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .welcome-content h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .welcome-content p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* Dashboard Section */
+        .dashboard-section {
+            padding: 40px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: #7a1a31;
+            box-shadow: 0 6px 20px rgba(122, 26, 49, 0.15);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            border-radius: 12px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .action-card h3 {
+            font-size: 16px;
+            color: #2c2c2c;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #7a1a31;
+            margin-bottom: 5px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: #4caf50;
+        }
+
+        .stat-change.negative {
+            color: #f44336;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        .chart-header {
+            margin-bottom: 25px;
+        }
+
+        .chart-header h2 {
+            font-size: 22px;
+            color: #2c2c2c;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .chart-header p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Bar Chart */
+        .bar-chart {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+            align-items: end;
+            height: 200px;
+        }
+
+        .bar {
+            background: linear-gradient(180deg, #7a1a31 0%, #5d1425 100%);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .bar:hover {
+            background: linear-gradient(180deg, #5d1425 0%, #7a1a31 100%);
+            transform: scaleY(1.05);
+        }
+
+        .bar-label {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* Activity Feed */
+        .activity-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .activity-header h2 {
+            font-size: 22px;
+            color: #2c2c2c;
+            font-weight: 600;
+        }
+
+        .view-all-btn {
+            color: #7a1a31;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .activity-item {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: background 0.2s;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-item:hover {
+            background: #f9f9f9;
+        }
+
+        .activity-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #7a1a31;
+            flex-shrink: 0;
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-details h4 {
+            font-size: 15px;
+            color: #2c2c2c;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .activity-details p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #999;
+            font-weight: 500;
+        }
+
+        /* Featured Lawyers */
+        .featured-section {
+            margin-top: 40px;
+        }
+
+        .featured-header {
+            margin-bottom: 25px;
+        }
+
+        .featured-header h2 {
+            font-size: 24px;
+            color: #2c2c2c;
+            font-weight: 600;
+        }
+
+        .lawyers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .lawyer-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .lawyer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+            border-color: #7a1a31;
+        }
+
+        .lawyer-image {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #e0e0e0;
+            border: 3px solid #f5f5f5;
+        }
+
+        .lawyer-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .lawyer-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 5px;
+        }
+
+        .lawyer-specialty {
+            font-size: 13px;
+            color: #7a1a31;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .lawyer-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 1024px) {
+            .quick-actions, .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .lawyers-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .quick-actions, .stats-grid, .lawyers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button class="donate-btn" onclick="goToDonate()">Donate</button>
+        <div class="logo-section">
+            <div class="logo"><img src="logo.png" alt="Brief-Case Logo" style="width: 100%; height: 100%; object-fit: contain;"></div>
+            <div class="brand-text">
+                <h1>BRIEF-CASE</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div class="top-right">
+            <div class="profile-icon" id="profileIcon" onclick="goToProfile()">
+                <span style="font-size:18px;color:#666;">User</span>
+            </div>
+            <div class="search-box">
+                <span style="color:#666;font-size:14px;">Search</span>
+                <input type="text" placeholder="" id="mainSearch">
+            </div>
+            <span style="color:white;font-size:14px;cursor:pointer;">EN</span>
+        </div>
+    </div>
+
+    <nav>
+        <a onclick="goToHome()">Dashboard</a>
+        <a onclick="goToLawyerSearch()">Find Lawyers</a>
+        <a onclick="goToMessages()">Messages</a>
+        <a onclick="goToAbout()">About</a>
+        <a onclick="goToWhatsNew()">What's New</a>
+        <a onclick="handleLogout()" style="color: #7a1a31; font-weight: 600;">Logout</a>
+    </nav>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="welcome-content">
+            <h1 id="welcomeText">Welcome Back!</h1>
+            <p id="welcomeSubtext">Here's what's happening with your legal matters</p>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-section">
+        <!-- Quick Actions -->
+        <div class="quick-actions" id="quickActions">
+            <!-- Will be populated dynamically -->
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid">
+            <!-- Will be populated dynamically -->
+        </div>
+
+        <!-- Chart Section -->
+        <div class="chart-section" id="chartSection">
+            <!-- Will be populated dynamically -->
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-section" id="activitySection">
+            <!-- Will be populated dynamically -->
+        </div>
+
+        <!-- Featured Lawyers (Client View Only) -->
+        <div class="featured-section" id="featuredSection" style="display:none;">
+            <div class="featured-header">
+                <h2>Recommended Lawyers</h2>
+            </div>
+            <div class="lawyers-grid" id="featuredLawyers"></div>
+        </div>
+    </div>
+
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/navigation.js"></script>
+<!-- REPLACE THE <script> SECTION IN home.html (starting around line 558) -->
+<!-- Find the line with: <script src="js/navigation.js"></script> -->
+<!-- Replace everything AFTER that line with this code: -->
+
+<script>
+    let currentUser = null;
+    let userType = null;
+    let isInitializing = false;
+
+    // IMPROVED INIT WITH TIMEOUT AND ERROR HANDLING
+    async function init() {
+        if (isInitializing) {
+            console.log('Already initializing...');
+            return;
+        }
+        
+        isInitializing = true;
+        
+        try {
+            console.log('Initializing home page...');
+            
+            // Check auth with timeout
+            const authed = await Promise.race([
+                window.Auth.requireAuth(),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Auth check timed out')), 10000)
+                )
+            ]);
+            
+            if (!authed) {
+                console.log('Not authenticated, redirecting...');
+                return;
+            }
+
+            // Get current user with timeout
+            currentUser = await Promise.race([
+                window.SupabaseClient.getCurrentUser(),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Failed to get user')), 10000)
+                )
+            ]);
+            
+            if (!currentUser) {
+                throw new Error('Failed to load user data');
+            }
+            
+            userType = window.Auth.getUserType();
+            console.log('User type:', userType);
+
+            await loadUserProfile();
+            
+            if (userType === 'lawyer') {
+                await loadLawyerDashboard();
+            } else {
+                await loadClientDashboard();
+            }
+            
+            console.log('Home page initialized successfully');
+        } catch (error) {
+            console.error('Init error:', error);
+            alert('Failed to load dashboard: ' + error.message + '. Please refresh the page.');
+        } finally {
+            isInitializing = false;
+        }
+    }
+
+    async function loadUserProfile() {
+        try {
+            const profile = await Promise.race([
+                window.SupabaseClient.getUserProfile(currentUser.id),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Profile load timed out')), 10000)
+                )
+            ]);
+            
+            if (profile) {
+                document.getElementById('welcomeText').textContent = `Welcome Back, ${profile.first_name}!`;
+                
+                if (profile.profile_photo_url) {
+                    document.getElementById('profileIcon').innerHTML = 
+                        `<img src="${profile.profile_photo_url}" alt="Profile">`;
+                } else {
+                    document.getElementById('profileIcon').innerHTML = 
+                        `<span style="font-size:18px;color:#666;">${profile.first_name[0]}</span>`;
+                }
+            }
+        } catch (error) {
+            console.error('Load profile error:', error);
+            // Continue even if profile load fails
+        }
+    }
+
+    async function loadLawyerDashboard() {
+        try {
+            document.getElementById('welcomeSubtext').textContent = "Monitor your practice and client interactions";
+
+            // Quick Actions for Lawyers
+            document.getElementById('quickActions').innerHTML = `
+                <div class="action-card" onclick="goToProfile()">
+                    <div class="action-icon">PR</div>
+                    <h3>My Profile</h3>
+                </div>
+                <div class="action-card" onclick="goToMessages()">
+                    <div class="action-icon">MS</div>
+                    <h3>Messages</h3>
+                </div>
+                <div class="action-card" onclick="window.location.href='lawyer-profile-settings.html'">
+                    <div class="action-icon">AP</div>
+                    <h3>Appointments</h3>
+                </div>
+                <div class="action-card" onclick="window.location.href='lawyer-profile-settings.html'">
+                    <div class="action-icon">CL</div>
+                    <h3>My Clients</h3>
+                </div>
+            `;
+
+            // Get lawyer stats with timeout
+            const [lawyerProfile, appointments] = await Promise.all([
+                Promise.race([
+                    window.SupabaseClient.supabase
+                        .from('lawyers')
+                        .select('*')
+                        .eq('id', currentUser.id)
+                        .single(),
+                    new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Lawyer profile load timed out')), 15000)
+                    )
+                ]).then(result => result.data).catch(() => null),
+                
+                Promise.race([
+                    window.SupabaseClient.supabase
+                        .from('appointments')
+                        .select('*')
+                        .eq('lawyer_id', currentUser.id),
+                    new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Appointments load timed out')), 15000)
+                    )
+                ]).then(result => result.data).catch(() => [])
+            ]);
+
+            const totalAppointments = appointments?.length || 0;
+            const pendingAppointments = appointments?.filter(a => a.status === 'scheduled' || a.status === 'rescheduled').length || 0;
+            const completedAppointments = appointments?.filter(a => a.status === 'completed').length || 0;
+            const totalReviews = lawyerProfile?.total_reviews || 0;
+
+            // Stats Grid for Lawyers
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Total Appointments</div>
+                    <div class="stat-value">${totalAppointments}</div>
+                    <div class="stat-change">All time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Meetings</div>
+                    <div class="stat-value">${pendingAppointments}</div>
+                    <div class="stat-change">Upcoming</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Cases Completed</div>
+                    <div class="stat-value">${completedAppointments}</div>
+                    <div class="stat-change">Success rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Client Reviews</div>
+                    <div class="stat-value">${totalReviews}</div>
+                    <div class="stat-change">${lawyerProfile?.average_rating?.toFixed(1) || '0.0'} avg rating</div>
+                </div>
+            `;
+
+            // Chart: Appointments by Status
+            const scheduled = appointments?.filter(a => a.status === 'scheduled').length || 0;
+            const rescheduled = appointments?.filter(a => a.status === 'rescheduled').length || 0;
+            const completed = appointments?.filter(a => a.status === 'completed').length || 0;
+            const cancelled = appointments?.filter(a => a.status === 'cancelled').length || 0;
+
+            const maxValue = Math.max(scheduled, rescheduled, completed, cancelled, 1);
+
+            document.getElementById('chartSection').innerHTML = `
+                <div class="chart-header">
+                    <h2>Appointment Status Overview</h2>
+                    <p>Distribution of your appointments by current status</p>
+                </div>
+                <div class="bar-chart">
+                    <div>
+                        <div class="bar" style="height: ${(scheduled/maxValue)*100}%"></div>
+                        <div class="bar-label">Scheduled<br>${scheduled}</div>
+                    </div>
+                    <div>
+                        <div class="bar" style="height: ${(rescheduled/maxValue)*100}%"></div>
+                        <div class="bar-label">Rescheduled<br>${rescheduled}</div>
+                    </div>
+                    <div>
+                        <div class="bar" style="height: ${(completed/maxValue)*100}%"></div>
+                        <div class="bar-label">Completed<br>${completed}</div>
+                    </div>
+                    <div>
+                        <div class="bar" style="height: ${(cancelled/maxValue)*100}%"></div>
+                        <div class="bar-label">Cancelled<br>${cancelled}</div>
+                    </div>
+                </div>
+            `;
+
+            // Recent Activity
+            const recentAppointments = appointments?.slice(0, 5) || [];
+            
+            let activityHTML = `
+                <div class="activity-header">
+                    <h2>Recent Activity</h2>
+                    <a class="view-all-btn" onclick="window.location.href='lawyer-profile-settings.html'">View All</a>
+                </div>
+            `;
+
+            if (recentAppointments.length > 0) {
+                for (const apt of recentAppointments) {
+                    try {
+                        const { data: client } = await window.SupabaseClient.supabase
+                            .from('users')
+                            .select('first_name, last_name')
+                            .eq('id', apt.client_id)
+                            .single();
+
+                        const date = new Date(apt.appointment_date);
+                        const timeAgo = getTimeAgo(apt.created_at);
+
+                        activityHTML += `
+                            <div class="activity-item">
+                                <div class="activity-icon">AP</div>
+                                <div class="activity-details">
+                                    <h4>New appointment with ${client?.first_name || 'Client'} ${client?.last_name || ''}</h4>
+                                    <p>${date.toLocaleDateString()} at ${apt.appointment_time}</p>
+                                </div>
+                                <div class="activity-time">${timeAgo}</div>
+                            </div>
+                        `;
+                    } catch (error) {
+                        console.error('Error loading client info:', error);
+                    }
+                }
+            } else {
+                activityHTML += '<div style="padding:20px;text-align:center;color:#666;">No recent activity</div>';
+            }
+
+            document.getElementById('activitySection').innerHTML = activityHTML;
+        } catch (error) {
+            console.error('Load lawyer dashboard error:', error);
+            alert('Failed to load dashboard data. Some information may be missing.');
+        }
+    }
+
+    async function loadClientDashboard() {
+        try {
+            document.getElementById('welcomeSubtext').textContent = "Manage your appointments and legal matters";
+
+            // Quick Actions for Clients
+            document.getElementById('quickActions').innerHTML = `
+                <div class="action-card" onclick="goToLawyerSearch()">
+                    <div class="action-icon">FL</div>
+                    <h3>Find Lawyer</h3>
+                </div>
+                <div class="action-card" onclick="goToMessages()">
+                    <div class="action-icon">MS</div>
+                    <h3>Messages</h3>
+                </div>
+                <div class="action-card" onclick="goToProfile()">
+                    <div class="action-icon">AP</div>
+                    <h3>Appointments</h3>
+                </div>
+                <div class="action-card" onclick="goToProfile()">
+                    <div class="action-icon">DC</div>
+                    <h3>Documents</h3>
+                </div>
+            `;
+
+            // Get client stats with timeout
+            const appointments = await Promise.race([
+                window.SupabaseClient.supabase
+                    .from('appointments')
+                    .select('*, lawyers!inner(*, users!inner(*))')
+                    .eq('client_id', currentUser.id)
+                    .order('created_at', { ascending: false }),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Appointments load timed out')), 15000)
+                )
+            ]).then(result => result.data).catch(() => []);
+
+            const totalAppointments = appointments?.length || 0;
+            const upcomingAppointments = appointments?.filter(a => 
+                a.status === 'scheduled' || a.status === 'rescheduled'
+            ).length || 0;
+            const completedAppointments = appointments?.filter(a => a.status === 'completed').length || 0;
+
+            // Stats Grid for Clients
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Total Consultations</div>
+                    <div class="stat-value">${totalAppointments}</div>
+                    <div class="stat-change">All time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Upcoming Appointments</div>
+                    <div class="stat-value">${upcomingAppointments}</div>
+                    <div class="stat-change">Scheduled</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Completed Sessions</div>
+                    <div class="stat-value">${completedAppointments}</div>
+                    <div class="stat-change">Finished</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Quick Actions</div>
+                    <div class="stat-value">→</div>
+                    <div class="stat-change"><a onclick="goToLawyerSearch()" style="color:#7a1a31;cursor:pointer;">Find Lawyer</a></div>
+                </div>
+            `;
+
+            // Recent Activity
+            const recentAppointments = appointments?.slice(0, 5) || [];
+            
+            let activityHTML = `
+                <div class="activity-header">
+                    <h2>Recent Activity</h2>
+                    <a class="view-all-btn" onclick="goToProfile()">View All</a>
+                </div>
+            `;
+
+            if (recentAppointments.length > 0) {
+                for (const apt of recentAppointments) {
+                    const lawyer = apt.lawyers;
+                    const date = new Date(apt.appointment_date);
+                    const timeAgo = getTimeAgo(apt.created_at);
+
+                    activityHTML += `
+                        <div class="activity-item">
+                            <div class="activity-icon">AP</div>
+                            <div class="activity-details">
+                                <h4>Consultation with ${lawyer?.users?.first_name || 'Lawyer'} ${lawyer?.users?.last_name || ''}</h4>
+                                <p>${date.toLocaleDateString()} at ${apt.appointment_time}</p>
+                            </div>
+                            <div class="activity-time">${timeAgo}</div>
+                        </div>
+                    `;
+                }
+            } else {
+                activityHTML += '<div style="padding:20px;text-align:center;color:#666;">No recent activity. <a onclick="goToLawyerSearch()" style="color:#7a1a31;cursor:pointer;">Book your first consultation</a></div>';
+            }
+
+            document.getElementById('activitySection').innerHTML = activityHTML;
+
+            // Load featured lawyers for clients
+            document.getElementById('featuredSection').style.display = 'block';
+            await loadFeaturedLawyers();
+        } catch (error) {
+            console.error('Load client dashboard error:', error);
+            alert('Failed to load dashboard data. Some information may be missing.');
+        }
+    }
+
+    async function loadFeaturedLawyers() {
+        try {
+            const container = document.getElementById('featuredLawyers');
+            
+            const { data } = await Promise.race([
+                window.SupabaseClient.supabase
+                    .from('lawyers')
+                    .select('*, users!inner(*)')
+                    .order('average_rating', { ascending: false, nullsLast: true })
+                    .order('updated_at', { ascending: false })
+                    .limit(3),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Featured lawyers load timed out')), 10000)
+                )
+            ]);
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#666;">No lawyers available</p>';
+                return;
+            }
+
+            container.innerHTML = data.map(lawyer => {
+                const rating = lawyer.average_rating || 0;
+                const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
+                
+                return `
+                    <div class="lawyer-card" onclick="window.location.href='lawyer-profile.html?id=${lawyer.id}'">
+                        <div class="lawyer-image">
+                            ${lawyer.users.profile_photo_url 
+                                ? `<img src="${lawyer.users.profile_photo_url}">` 
+                                : `<div style="width:100%;height:100%;background:linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);display:flex;align-items:center;justify-content:center;font-size:32px;color:white;font-weight:bold;">${lawyer.users.first_name[0]}${lawyer.users.last_name[0]}</div>`}
+                        </div>
+                        <div class="lawyer-name">${lawyer.users.first_name} ${lawyer.users.last_name}</div>
+                        <div class="lawyer-specialty">${lawyer.law_firm || 'Legal Professional'}</div>
+                        <div class="lawyer-rating">
+                            <span style="color:#ffc107;">${stars}</span>
+                            <span>${rating.toFixed(1)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } catch (error) {
+            console.error('Load featured lawyers error:', error);
+            const container = document.getElementById('featuredLawyers');
+            container.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#666;">Unable to load lawyers</p>';
+        }
+    }
+
+    function getTimeAgo(timestamp) {
+        const now = new Date();
+        const date = new Date(timestamp);
+        const seconds = Math.floor((now - date) / 1000);
+        
+        if (seconds < 60) return 'Just now';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        const days = Math.floor(hours / 24);
+        return `${days}d ago`;
+    }
+
+    document.getElementById('mainSearch').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const query = e.target.value.trim();
+            if (query) window.location.href = `lawyer-search.html?q=${encodeURIComponent(query)}`;
+        }
+    });
+
+    async function handleLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            const result = await window.Auth.logout();
+            if (result.success) {
+                window.location.href = 'index.html';
+            }
+        }
+    }
+
+    function goToProfile() {
+        if (userType === 'lawyer') {
+            window.location.href = 'lawyer-profile-settings.html';
+        } else {
+            window.location.href = 'client-profile.html';
+        }
+    }
+
+    function goToMessages() {
+        window.location.href = 'messages.html';
+    }
+
+    function goToLawyerSearch() {
+        window.location.href = 'lawyer-search.html';
+    }
+
+    function goToDonate() {
+        window.location.href = 'donate.html';
+    }
+
+    // Initialize with delay
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            init();
+        }, 500);
+    });
+</script>
+</body>
+</html>

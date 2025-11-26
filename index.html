@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brief-Case - Your Case, Our Counsel</title>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .top-bar {
+            background-color: #3a3d4a;
+            padding: 10px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .donate-btn {
+            background-color: #7a1a31;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+
+        .donate-btn:hover {
+            background-color: #5d1425;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            background: transparent;
+            border-radius: 8px;
+        }
+
+        .brand-text h1 {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-text p {
+            color: #b0b0b0;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .create-account-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .create-account-btn:hover {
+            background: white;
+            color: #3a3d4a;
+        }
+
+        .search-box {
+            background: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 150px;
+        }
+
+        .search-icon {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .lang-icon {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .lang-icon:hover {
+            transform: scale(1.1);
+        }
+
+        nav {
+            background-color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            padding: 10px 20px;
+            transition: color 0.3s;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: #7a1a31;
+            background: #f5f5f5;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white;
+            padding: 80px 50px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: #7a1a31;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            padding: 14px 35px;
+            border: 2px solid white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: white;
+            color: #7a1a31;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 50px;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            color: #2c2c2c;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: #f9f9f9;
+            padding: 35px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #7a1a31;
+            box-shadow: 0 8px 20px rgba(122, 26, 49, 0.15);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            border-radius: 12px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            color: #2c2c2c;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 80px 50px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: #7a1a31;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: 80px 50px;
+            background: white;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .step-card h3 {
+            font-size: 22px;
+            color: #2c2c2c;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .step-card p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Featured Lawyers Section */
+        .featured-lawyers {
+            padding: 80px 50px;
+            background: #f9f9f9;
+        }
+
+        .lawyers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .lawyer-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .lawyer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #7a1a31;
+        }
+
+        .lawyer-image {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #e0e0e0;
+            border: 4px solid #f5f5f5;
+        }
+
+        .lawyer-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .lawyer-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 8px;
+        }
+
+        .lawyer-specialty {
+            font-size: 14px;
+            color: #7a1a31;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .lawyer-bio {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .lawyer-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: #ffc107;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .star {
+            color: #ffc107;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white;
+            padding: 80px 50px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 38px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c2c2c;
+            color: white;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #7a1a31;
+        }
+
+        .footer-bottom {
+            font-size: 14px;
+            color: #999;
+        }
+
+        @media (max-width: 1024px) {
+            .features-grid, .stats-grid, .steps-container, .lawyers-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .features-grid, .stats-grid, .steps-container, .lawyers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button class="donate-btn" onclick="goToDonate()">Donate</button>
+        <div class="logo-section">
+            <div class="logo"><img src="logo.png" alt="Brief-Case Logo" style="width: 100%; height: 100%; object-fit: contain;"></div>
+            <div class="brand-text">
+                <h1>BRIEF-CASE</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div class="top-right">
+            <button class="create-account-btn" onclick="goToSignup()">Create Account</button>
+            <div class="search-box">
+                <span class="search-icon">Search</span>
+                <input type="text" placeholder="" id="mainSearch">
+            </div>
+            <span class="lang-icon">EN</span>
+        </div>
+    </div>
+
+    <nav>
+        <a onclick="goToHome()">Home</a>
+        <a onclick="goToLawyerSearch()">Find Lawyers</a>
+        <a onclick="goToAbout()">About Us</a>
+        <a onclick="goToWhatsNew()">What's New</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Legal Excellence, Simplified</h1>
+        <p>Connect with Pakistan's top legal professionals. Book consultations, manage your cases, and get expert legal counsel—all in one platform.</p>
+        <div class="hero-buttons">
+            <button class="btn-primary" onclick="goToLawyerSearch()">Find an Attorney</button>
+            <button class="btn-secondary" onclick="handleBookConsultation()">Book Consultation</button>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <h2 class="section-title">Why Choose Brief-Case?</h2>
+        <p class="section-subtitle">Everything you need to manage your legal matters efficiently and securely</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">VS</div>
+                <h3>Verified Specialists</h3>
+                <p>All lawyers undergo rigorous verification. Bar registration, credentials, and experience confirmed.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">IB</div>
+                <h3>Instant Booking</h3>
+                <p>Schedule consultations in minutes. Choose between in-person or online meetings at your convenience.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">SC</div>
+                <h3>Secure Communication</h3>
+                <p>Enterprise-grade encryption for all messages and documents. Your privacy is our priority.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">TP</div>
+                <h3>Transparent Pricing</h3>
+                <p>See consultation fees upfront. No hidden charges. Pay securely through multiple payment options.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">DM</div>
+                <h3>Document Management</h3>
+                <p>Upload, share, and manage legal documents securely. Access your files anytime, anywhere.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">RR</div>
+                <h3>Real Reviews</h3>
+                <p>Authentic ratings from verified clients. Make informed decisions based on real experiences.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-section">
+        <h2 class="section-title">Trusted Nationwide</h2>
+        <p class="section-subtitle">Join thousands who have found legal solutions through Brief-Case</p>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Verified Lawyers</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Successful Consultations</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Practice Areas</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Client Satisfaction</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Get legal help in three simple steps</p>
+        
+        <div class="steps-container">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Search & Compare</h3>
+                <p>Browse our verified lawyers by specialty, location, ratings, and fees. Read reviews from real clients.</p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Book & Pay</h3>
+                <p>Schedule a consultation at your preferred time. Choose between online or in-person meetings. Pay securely.</p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Get Expert Counsel</h3>
+                <p>Meet with your lawyer, discuss your case, share documents securely, and get professional legal guidance.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Lawyers Section -->
+    <div class="featured-lawyers">
+        <h2 class="section-title">Top-Rated Legal Professionals</h2>
+        <p class="section-subtitle">Meet some of our highest-rated attorneys</p>
+        
+        <div class="lawyers-grid" id="featuredLawyers">
+            <!-- Will be populated dynamically -->
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2>Ready to Find Your Legal Expert?</h2>
+        <p>Join thousands of satisfied clients who found the right legal representation through Brief-Case</p>
+        <div class="hero-buttons">
+            <button class="btn-primary" onclick="goToSignup()">Get Started Free</button>
+            <button class="btn-secondary" onclick="goToLawyerSearch()">Browse Lawyers</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a onclick="goToAbout()">About</a>
+                <a onclick="goToWhatsNew()">What's New</a>
+                <a onclick="goToLawyerSearch()">Find Lawyers</a>
+                <a onclick="goToDonate()">Support Us</a>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Brief-Case. All rights reserved. | Your case, our counsel.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        async function handleBookConsultation() {
+            const isLoggedIn = await window.SupabaseClient.isAuthenticated();
+            if (isLoggedIn) {
+                window.location.href = 'lawyer-search.html';
+            } else {
+                alert('Please login to book a consultation');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Load featured lawyers sorted by rating
+        async function loadFeaturedLawyers() {
+            const container = document.getElementById('featuredLawyers');
+            
+            try {
+                const { data, error } = await window.SupabaseClient.supabase
+                    .from('lawyers')
+                    .select(`
+                        *,
+                        users!inner(first_name, last_name, profile_photo_url),
+                        lawyer_practice_areas(
+                            practice_areas(name)
+                        )
+                    `)
+                    .order('average_rating', { ascending: false, nullsLast: true })
+                    .order('total_reviews', { ascending: false })
+                    .limit(3);
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">No featured lawyers yet. Check back soon!</p>';
+                    return;
+                }
+
+                container.innerHTML = data.map(lawyer => {
+                    const specialties = lawyer.lawyer_practice_areas
+                        ?.map(pa => pa.practice_areas?.name)
+                        .filter(Boolean)
+                        .join(', ') || 'General Practice';
+                    
+                    const rating = lawyer.average_rating || 0;
+                    const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
+                    
+                    return `
+                        <div class="lawyer-card" onclick="viewLawyerProfile('${lawyer.id}')">
+                            <div class="lawyer-image">
+                                ${lawyer.users.profile_photo_url 
+                                    ? `<img src="${lawyer.users.profile_photo_url}" alt="${lawyer.users.first_name}">`
+                                    : `<div style="width:100%;height:100%;background:linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);display:flex;align-items:center;justify-content:center;font-size:48px;color:white;font-weight:bold;">${lawyer.users.first_name[0]}${lawyer.users.last_name[0]}</div>`
+                                }
+                            </div>
+                            <div class="lawyer-name">${lawyer.users.first_name} ${lawyer.users.last_name}</div>
+                            <div class="lawyer-specialty">${specialties}</div>
+                            <div class="lawyer-bio">${lawyer.biography?.substring(0, 80) || 'Experienced legal professional.'}...</div>
+                            <div class="lawyer-rating">
+                                <span class="star">${stars}</span>
+                                <span>${rating.toFixed(1)}</span>
+                                ${lawyer.total_reviews ? `<span>(${lawyer.total_reviews})</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading lawyers:', error);
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Unable to load lawyers</p>';
+            }
+        }
+
+        function viewLawyerProfile(lawyerId) {
+            window.location.href = `lawyer-profile.html?id=${lawyerId}`;
+        }
+
+        // Search functionality
+        document.getElementById('mainSearch').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = e.target.value.trim();
+                if (query) {
+                    window.location.href = `lawyer-search.html?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+
+        // Check auth and redirect if logged in
+        async function checkAuth() {
+            const isLoggedIn = await window.SupabaseClient.isAuthenticated();
+            if (isLoggedIn) {
+                window.location.href = 'home.html';
+            }
+        }
+
+        // Initialize
+        checkAuth();
+        loadFeaturedLawyers();
+    </script>
+</body>
+</html>

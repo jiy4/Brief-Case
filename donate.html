@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Donate to Brief-Case</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #9a9a9a;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #3a3d4a;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #2a2c35;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .donate-btn {
+            background: #7a1a31;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo-nav {
+            width: 60px;
+            height: 50px;
+            font-size: 40px;
+        }
+
+        .brand-nav h1 {
+            font-size: 18px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .brand-nav p {
+            font-size: 11px;
+            color: #ccc;
+            font-style: italic;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 20px;
+            padding: 6px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            font-size: 13px;
+            flex: 1;
+        }
+
+        .translate-icon {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Page header */
+        .page-header {
+            background: white;
+            padding: 18px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-arrow { font-size: 20px; cursor: pointer; color: #333; }
+        .page-title { font-size: 20px; font-weight: bold; color: #333; }
+
+        /* Main content & donate page styles */
+        .main-content { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+        .hero {
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white; padding: 60px 40px; border-radius: 12px;
+            text-align: center; margin-bottom: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .hero h2 { font-size: 42px; margin-bottom: 15px; }
+        .hero p { font-size: 18px; opacity: 0.95; line-height: 1.6; }
+
+        .mission {
+            background: white; padding: 40px; border-radius: 12px;
+            margin-bottom: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .mission h3 { font-size: 28px; color: #7a1a31; margin-bottom: 20px; }
+        .mission p { font-size: 16px; color: #555; line-height: 1.8; margin-bottom: 15px; }
+
+        .impact-list {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 20px; margin-top: 30px;
+        }
+
+        .impact-item {
+            background: #f9f9f9; padding: 20px;
+            border-left: 4px solid #7a1a31; border-radius: 8px;
+        }
+
+        .impact-item h4 { color: #7a1a31; margin-bottom: 10px; font-size: 18px; }
+        .impact-item p { color: #666; font-size: 14px; }
+
+        .donation-section {
+            background: white; padding: 40px; border-radius: 12px;
+            margin-bottom: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .donation-section h3 {
+            font-size: 28px; color: #333; margin-bottom: 30px; text-align: center;
+        }
+
+        .donation-options {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 20px; margin-bottom: 30px;
+        }
+
+        .donation-card {
+            background: #f9f9f9;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .donation-card:hover {
+            border-color: #7a1a31; background: #fff5f7; transform: translateY(-5px);
+        }
+
+        .donation-card.selected {
+            border-color: #7a1a31; background: #e8d0d6;
+        }
+
+        .amount { font-size: 32px; font-weight: bold; color: #7a1a31; margin-bottom: 10px; }
+        .description { font-size: 14px; color: #666; }
+
+        .custom-donation {
+            background: #f9f9f9; padding: 25px;
+            border-radius: 10px; margin-bottom: 30px;
+        }
+
+        .custom-input-group { display: flex; gap: 10px; }
+
+        .currency-select, .custom-input-group input {
+            padding: 12px 15px; border: 2px solid #ddd; border-radius: 6px; font-size: 14px;
+        }
+
+        .custom-input-group input { flex: 1; }
+
+        .payment-methods {
+            background: #f9f9f9; padding: 25px; border-radius: 10px; margin-bottom: 30px;
+        }
+
+        .method-options {
+            display: grid; grid-template-columns: repeat(3,1fr); gap: 15px;
+        }
+
+        .method-btn {
+            padding: 15px; border: 2px solid #ddd; border-radius: 8px;
+            background: white; cursor: pointer; font-size: 14px;
+            transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+
+        .method-btn:hover { border-color: #7a1a31; background: #fff5f7; }
+        .method-btn.selected { background: #7a1a31; color: white; border-color: #7a1a31; }
+
+        .donate-action { text-align: center; margin-bottom: 40px; }
+
+        .btn-donate {
+            background: #7a1a31; color: white; border: none;
+            padding: 16px 50px; font-size: 18px; font-weight: 600;
+            border-radius: 8px; cursor: pointer; transition: all 0.3s;
+        }
+
+        .btn-donate:hover {
+            background: #5d1425;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(122,26,49,0.3);
+        }
+
+        .btn-donate:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .benefits {
+            background: white; padding: 40px; border-radius: 12px;
+            margin-bottom: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .benefits h3 { font-size: 28px; color: #333; margin-bottom: 30px; text-align: center; }
+        .benefits-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+
+        .benefit-card {
+            background: #f9f9f9; padding: 25px; border-radius: 10px;
+            text-align: center; border-top: 4px solid #7a1a31;
+        }
+
+        .benefit-icon { font-size: 40px; margin-bottom: 15px; }
+        .benefit-card h4 { color: #333; margin-bottom: 10px; }
+        .benefit-card p { font-size: 14px; color: #666; }
+
+        .footer-message {
+            background: linear-gradient(135deg, #f0e6e8 0%, #e8d0d6 100%);
+            padding: 40px; border-radius: 12px; text-align: center; margin-bottom: 40px;
+        }
+
+        .footer-message h3 { color: #7a1a31; margin-bottom: 15px; font-size: 24px; }
+        .footer-message p { color: #555; font-size: 16px; line-height: 1.6; }
+
+        @media (max-width: 768px) {
+            .top-nav { padding: 10px 12px; }
+            .search-box { width: 140px; }
+            .donation-options, .impact-list, .benefits-grid, .method-options {
+                grid-template-columns: 1fr;
+            }
+            .hero h2 { font-size: 28px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-left">
+            <button class="donate-btn" onclick="goToDonate()">Donate</button>
+        </div>
+        <div class="nav-center">
+            <div class="logo-nav"></div>
+            <div class="brand-nav">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="">
+            </div>
+            <span class="translate-icon">🌐</span>
+        </div>
+    </div>
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="header-left">
+            <span class="back-arrow" onclick="goBack()">←</span>
+            <h1 class="page-title">Support Our Mission</h1>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="hero">
+            <h2>💰 Make a Difference Today</h2>
+            <p>Your donation helps us provide accessible legal services to everyone who needs them.</p>
+        </div>
+
+        <div class="mission">
+            <h3>🎯 Our Mission</h3>
+            <p>Brief-Case is committed to making legal assistance accessible and affordable for all.</p>
+
+            <div class="impact-list">
+                <div class="impact-item"><h4>500+</h4><p>Cases Resolved</p></div>
+                <div class="impact-item"><h4>10,000+</h4><p>People Helped</p></div>
+                <div class="impact-item"><h4>50+</h4><p>Expert Lawyers</p></div>
+            </div>
+        </div>
+
+        <div class="donation-section">
+            <h3>Select Donation Amount</h3>
+
+            <div class="donation-options">
+                <div class="donation-card" onclick="selectAmount(this, 500)">
+                    <div class="amount">Rs. 500</div><div class="description">Small Contribution</div>
+                </div>
+
+                <div class="donation-card" onclick="selectAmount(this, 1000)">
+                    <div class="amount">Rs. 1,000</div><div class="description">Standard Gift</div>
+                </div>
+
+                <div class="donation-card" onclick="selectAmount(this, 5000)">
+                    <div class="amount">Rs. 5,000</div><div class="description">Generous Support</div>
+                </div>
+
+                <div class="donation-card" onclick="selectAmount(this, 10000)">
+                    <div class="amount">Rs. 10,000</div><div class="description">Major Donor</div>
+                </div>
+            </div>
+
+            <div class="custom-donation">
+                <h4>💡 Custom Amount</h4>
+                <div class="custom-input-group">
+                    <select class="currency-select" id="currency">
+                        <option>PKR</option>
+                        <option>USD</option>
+                        <option>EUR</option>
+                    </select>
+                    <input type="number" id="customAmount" placeholder="Enter custom amount" min="1">
+                </div>
+            </div>
+
+            <div class="payment-methods">
+                <h4>Select Payment Method</h4>
+                <div class="method-options">
+                    <button class="method-btn" onclick="selectMethod(this)">💳 Card</button>
+                    <button class="method-btn" onclick="selectMethod(this)">🏦 Bank Transfer</button>
+                    <button class="method-btn" onclick="selectMethod(this)">📱 Mobile Wallet</button>
+                </div>
+            </div>
+
+            <div class="donate-action">
+                <button class="btn-donate" id="donateBtn" onclick="processDonation()">🎁 Donate Now</button>
+            </div>
+        </div>
+
+        <div class="benefits">
+            <h3>🌟 Donor Benefits</h3>
+            <div class="benefits-grid">
+                <div class="benefit-card"><div class="benefit-icon">📜</div><h4>Certificate</h4><p>Official certificate</p></div>
+                <div class="benefit-card"><div class="benefit-icon">📧</div><h4>Updates</h4><p>Monthly reports</p></div>
+                <div class="benefit-card"><div class="benefit-icon">⭐</div><h4>Recognition</h4><p>Donor wall</p></div>
+                <div class="benefit-card"><div class="benefit-icon">📖</div><h4>Tax Relief</h4><p>Tax benefits</p></div>
+            </div>
+        </div>
+
+        <div class="footer-message">
+            <h3>❤️ Thank You for Your Support</h3>
+            <p>Together, we're making legal justice accessible for everyone.</p>
+        </div>
+
+    </div>
+
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        let selectedAmount = null;
+        let selectedMethod = null;
+
+        function goToDonate() {
+            window.location.href = 'donate.html';
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function selectAmount(el, amount) {
+            document.querySelectorAll('.donation-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedAmount = amount;
+            // Clear custom amount when preset is selected
+            document.getElementById('customAmount').value = '';
+        }
+
+        function selectMethod(el) {
+            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedMethod = el.textContent.trim();
+        }
+
+        async function processDonation() {
+            const customAmount = document.getElementById('customAmount').value;
+            const amount = customAmount ? parseFloat(customAmount) : selectedAmount;
+            const currency = document.getElementById('currency').value;
+
+            if (!amount || amount <= 0) {
+                alert("Please enter a valid donation amount");
+                return;
+            }
+
+            if (!selectedMethod) {
+                alert("Please select a payment method");
+                return;
+            }
+
+            // Disable button while processing
+            const btn = document.getElementById('donateBtn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            // Check if user is logged in
+            const user = await window.SupabaseClient.getCurrentUser();
+            
+            // Prepare donation data for payment page
+            const donationData = {
+                isDonation: true,
+                amount: amount,
+                currency: currency,
+                paymentMethod: selectedMethod.toLowerCase().replace(/[^a-z]/g, ''),
+                donorName: user ? `${user.email}` : 'Anonymous Donor',
+                donorEmail: user ? user.email : null
+            };
+
+            // Navigate to payment page with donation data
+            window.Navigation.navigate(window.Navigation.PAGES.PAYMENT, donationData);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Brief-Case</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        .top-bar { background: #3a3d4a; padding: 10px 50px; display: flex; justify-content: space-between; align-items: center; }
+        .donate-btn { background: #7a1a31; color: white; padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        .logo-section { display: flex; align-items: center; gap: 15px; flex: 1; justify-content: center; }
+        .logo { font-size: 40px; }
+        .brand-text h1 { color: white; font-size: 18px; }
+        .brand-text p { color: #b0b0b0; font-size: 12px; }
+        nav { background: white; padding: 15px 50px; display: flex; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        nav a { text-decoration: none; color: #333; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        nav a:hover { color: #7a1a31; background: #f5f5f5; }
+        .hero { background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%); color: white; padding: 80px 50px; text-align: center; }
+        .hero h1 { font-size: 48px; margin-bottom: 20px; }
+        .hero p { font-size: 20px; max-width: 800px; margin: 0 auto; line-height: 1.6; }
+        .content { max-width: 1200px; margin: 60px auto; padding: 0 50px; }
+        .section { margin-bottom: 60px; }
+        .section h2 { font-size: 32px; color: #2c2c2c; margin-bottom: 20px; }
+        .section p { font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 15px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+        .feature-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; }
+        .feature-icon { font-size: 48px; margin-bottom: 15px; }
+        .feature-card h3 { font-size: 20px; color: #2c2c2c; margin-bottom: 10px; }
+        .feature-card p { font-size: 14px; color: #666; }
+        .team { background: white; padding: 60px 50px; margin-top: 60px; }
+        .team h2 { text-align: center; font-size: 32px; margin-bottom: 40px; }
+        
+        /* FAQ Section Styles */
+        .faq-section { 
+            background: white; 
+            padding: 60px 50px; 
+            margin: 60px 0;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .faq-section h2 { 
+            text-align: center; 
+            font-size: 36px; 
+            color: #2c2c2c; 
+            margin-bottom: 15px;
+        }
+        .faq-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 50px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .faq-item:hover {
+            border-color: #7a1a31;
+            box-shadow: 0 4px 12px rgba(122, 26, 49, 0.1);
+        }
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s ease;
+        }
+        .faq-question:hover {
+            background: #f0f0f0;
+        }
+        .faq-question h3 {
+            font-size: 18px;
+            color: #2c2c2c;
+            font-weight: 600;
+            flex: 1;
+            padding-right: 20px;
+        }
+        .faq-icon {
+            font-size: 24px;
+            color: #7a1a31;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            padding: 0 30px;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 30px 25px 30px;
+        }
+        .faq-answer p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #555;
+            margin: 0;
+        }
+        .faq-answer ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+        .faq-answer li {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .faq-section { padding: 40px 25px; }
+            .faq-question { padding: 20px; }
+            .faq-question h3 { font-size: 16px; }
+            .faq-icon { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button class="donate-btn" onclick="goToDonate()">Donate</button>
+        <div class="logo-section">
+           
+            <div class="brand-text">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+        <div style="width:100px;"></div>
+    </div>
+
+    <nav>
+        <a onclick="goToHome()">Home</a>
+        <a onclick="goToLawyerSearch()">Lawyer Search</a>
+        <a onclick="goToAbout()">About</a>
+        <a onclick="goToWhatsNew()">What's New</a>
+    </nav>
+
+    <div class="hero">
+        <h1>About Brief-Case</h1>
+        <p>Connecting clients with trusted legal professionals through technology. Your case, our counsel.</p>
+    </div>
+
+    <div class="content">
+        <div class="section">
+            <h2>Our Mission</h2>
+            <p>At Brief-Case, we believe that everyone deserves access to quality legal representation. Our platform bridges the gap between clients seeking legal counsel and experienced attorneys ready to help. We're committed to making legal services more accessible, transparent, and efficient.</p>
+            <p>Founded with the vision of modernizing how people connect with lawyers, Brief-Case leverages technology to simplify the process of finding, consulting, and working with legal professionals across Pakistan.</p>
+        </div>
+
+        <!-- FAQ Section Replacing Stats -->
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            <p class="faq-subtitle">Everything you need to know about Brief-Case and how we can help with your legal needs</p>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>How do I find the right lawyer for my case?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Finding the right lawyer is easy with Brief-Case! Use our advanced search feature to filter lawyers by practice area (criminal law, family law, corporate law, etc.), location, ratings, and consultation fees. Each lawyer profile includes their experience, qualifications, client reviews, and success rates to help you make an informed decision.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>Are all lawyers on Brief-Case verified?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! Every lawyer on our platform goes through a rigorous verification process. We verify their bar registration, educational credentials, and professional experience before they can join Brief-Case. This ensures you're always connecting with legitimate, qualified legal professionals.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>How much does a consultation cost?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Consultation fees vary by lawyer and their area of expertise. Each lawyer sets their own rates, which are clearly displayed on their profile. Initial consultations typically range from PKR 2,000 to PKR 10,000. You'll see the exact cost before booking, with no hidden fees. A 15% service fee is added to support platform maintenance.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>Can I have consultations online?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely! Many of our lawyers offer both in-person and online consultations. When booking, you can choose your preferred meeting type. Online consultations are conducted through secure video calls, making legal advice accessible from anywhere in Pakistan. You can also communicate with your lawyer through our secure messaging system.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>How secure is my information on Brief-Case?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Your privacy and security are our top priorities. We use enterprise-grade encryption to protect all communications, documents, and personal information. All data is stored securely, and our messaging system is fully encrypted. We comply with data protection regulations and never share your information without consent.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>What payment methods do you accept?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We offer multiple secure payment options for your convenience:</p>
+                        <ul>
+                            <li>Credit and Debit Cards (Visa, Mastercard, American Express)</li>
+                            <li>Bank Transfer</li>
+                            <li>PayPak (local payment gateway)</li>
+                        </ul>
+                        <p>All payments are processed securely, and you'll receive an instant receipt for your records.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>Can I cancel or reschedule my appointment?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, you can manage your appointments from your client dashboard. To reschedule, contact your lawyer through our messaging system to find a new convenient time. Cancellation policies vary by lawyer, so we recommend checking with them directly. Most lawyers allow cancellations up to 24 hours before the scheduled appointment.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>How do I upload and share documents with my lawyer?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our platform includes a secure document management system. From your profile, you can upload documents (PDF, DOC, images) which are encrypted and stored securely. You can then share specific documents with your lawyer through the messaging system or during your consultation. Documents remain accessible only to you and your designated lawyer.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>Are lawyer reviews on Brief-Case authentic?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! Only verified clients who have completed appointments can leave reviews. This ensures all feedback is genuine and based on real experiences. You cannot review a lawyer unless you've had a confirmed consultation with them, making our review system one of the most trustworthy in the industry.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>What if I'm not satisfied with my consultation?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Your satisfaction matters to us. If you're not satisfied with your consultation, please contact our support team within 24 hours. We'll review your case and work to resolve any issues. While we can't guarantee specific legal outcomes, we ensure all lawyers maintain professional standards. You can also leave a review to help other clients make informed decisions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>What We Offer</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Smart Search</h3>
+                    <p>Find lawyers by specialty, location, rating, and availability with our advanced search system.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Easy Booking</h3>
+                    <p>Schedule consultations online or in-person with just a few clicks.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Secure Messaging</h3>
+                    <p>Communicate directly with your lawyer through our encrypted messaging system.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>Safe Payments</h3>
+                    <p>Multiple payment options with secure transaction processing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Document Management</h3>
+                    <p>Upload, store, and share legal documents securely.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Verified Reviews</h3>
+                    <p>Read authentic reviews from real clients to make informed decisions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Why Choose Brief-Case?</h2>
+            <p><strong>Transparency:</strong> Clear pricing, verified credentials, and authentic reviews help you make informed decisions.</p>
+            <p><strong>Convenience:</strong> Access legal services from anywhere, anytime. Book consultations that fit your schedule.</p>
+            <p><strong>Quality:</strong> All lawyers on our platform are verified professionals with proven track records.</p>
+            <p><strong>Security:</strong> Your data and communications are protected with enterprise-grade encryption.</p>
+            <p><strong>Support:</strong> Our team is available 24/7 to assist you with any questions or concerns.</p>
+        </div>
+    </div>
+
+    <div class="team">
+        <h2>Trusted by Clients Nationwide</h2>
+        <p style="text-align:center;max-width:800px;margin:0 auto;color:#666;">From Karachi to Islamabad, thousands of clients trust Brief-Case to connect them with the right legal professionals for their needs.</p>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script>
+        // FAQ Toggle Function
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            const allItems = document.querySelectorAll('.faq-item');
+            
+            // Close all other FAQs
+            allItems.forEach(item => {
+                if (item !== faqItem && item.classList.contains('active')) {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Toggle current FAQ
+            faqItem.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lawyer Profile Settings - Brief Case</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header { 
+            background: linear-gradient(135deg, #3a3d4a 0%, #2c2f38 100%);
+            padding: 12px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .donate-btn { 
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white; 
+            border: none; 
+            padding: 10px 25px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(122, 26, 49, 0.3);
+        }
+        .donate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(122, 26, 49, 0.4);
+        }
+        .logo-section { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            flex: 1; 
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .logo-section:hover {
+            opacity: 0.85;
+            transform: scale(1.02);
+        }
+        .logo { 
+            font-size: 40px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        .brand-text h1 { 
+            color: white; 
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .brand-text p { 
+            color: #b0b0b0; 
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        /* Page Header */
+        .page-header { 
+            background: white;
+            padding: 20px 50px; 
+            display: flex; 
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .back-arrow { 
+            font-size: 28px; 
+            cursor: pointer; 
+            margin-right: 15px;
+            color: #7a1a31;
+            transition: all 0.3s;
+        }
+        .back-arrow:hover {
+            transform: translateX(-5px);
+        }
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c2c2c;
+        }
+
+        /* Main Content */
+        main { 
+            padding: 40px 50px; 
+            display: grid; 
+            grid-template-columns: 2fr 1fr; 
+            gap: 30px; 
+            max-width: 1600px; 
+            margin: 0 auto;
+        }
+
+        /* Card Styles */
+        .card { 
+            background: white;
+            border-radius: 16px; 
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            border-color: #7a1a31;
+        }
+        .card h3 {
+            font-size: 22px;
+            color: #2c2c2c;
+            margin-bottom: 25px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h3::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            border-radius: 2px;
+        }
+
+        /* Profile Section */
+        .profile-section { 
+            display: flex; 
+            gap: 30px;
+            align-items: flex-start;
+        }
+        .profile-photo { 
+            width: 160px; 
+            height: 160px; 
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border: 4px solid white;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        .profile-photo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        }
+        .profile-photo img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
+        }
+        .btn-upload { 
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer;
+            width: 100%; 
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(122, 26, 49, 0.3);
+        }
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(122, 26, 49, 0.4);
+        }
+
+        /* Form Styles */
+        .form-group { 
+            margin-bottom: 20px;
+        }
+        .form-group label { 
+            display: block; 
+            font-size: 14px; 
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #3a3d4a;
+        }
+        .form-group input, .form-group textarea, .form-group select { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #7a1a31;
+            box-shadow: 0 0 0 3px rgba(122, 26, 49, 0.1);
+        }
+        .form-group input:read-only {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+        .form-group textarea { 
+            min-height: 100px; 
+            resize: vertical;
+        }
+
+        /* Practice Tags */
+        .practice-tags { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 12px; 
+            margin-bottom: 15px;
+        }
+        .tag { 
+            background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 3px 8px rgba(122, 26, 49, 0.3);
+            transition: all 0.3s ease;
+        }
+        .tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(122, 26, 49, 0.4);
+        }
+        .btn-add { 
+            background: white;
+            color: #7a1a31;
+            border: 2px solid #7a1a31;
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .btn-add:hover {
+            background: #7a1a31;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(122, 26, 49, 0.3);
+        }
+
+        /* Grid Layouts */
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Client/Meeting Items */
+        .client-item, .meeting-item {
+            border: 2px solid #f0f0f0;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+        }
+        .client-item:hover, .meeting-item:hover {
+            border-color: #7a1a31;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .client-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #ccc;
+            flex-shrink: 0;
+            border: 3px solid white;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        .client-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .client-info {
+            flex: 1;
+        }
+        .client-info h4 {
+            font-size: 15px;
+            margin-bottom: 5px;
+            color: #2c2c2c;
+            font-weight: 600;
+        }
+        .client-info p {
+            font-size: 12px;
+            color: #666;
+        }
+        .btn-view-docs {
+            padding: 8px 16px;
+            border: 2px solid #7a1a31;
+            background: white;
+            color: #7a1a31;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-view-docs:hover {
+            background: #7a1a31;
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 15px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .card {
+            animation: fadeInUp 0.5s ease;
+        }
+        .left-column .card:nth-child(1) { animation-delay: 0.1s; }
+        .left-column .card:nth-child(2) { animation-delay: 0.2s; }
+        .left-column .card:nth-child(3) { animation-delay: 0.3s; }
+        .right-column .card:nth-child(1) { animation-delay: 0.4s; }
+        .right-column .card:nth-child(2) { animation-delay: 0.5s; }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+            .two-column-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="donate-btn" onclick="goToDonate()"> Donate</button>
+        <div class="logo-section" onclick="goToHome()">
+            <div class="logo"></div>
+            <div class="brand-text">
+                <h1>brief-case</h1>
+                <p>your case, our counsel</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div>
+            <span class="back-arrow" onclick="goBack()"></span>
+            <span class="page-title"> Lawyer Profile Settings</span>
+        </div>
+    </div>
+
+    <main>
+        <div class="left-column">
+            <div class="card">
+                <h3> Profile</h3>
+                <div class="profile-section">
+                    <div>
+                        <div class="profile-photo" id="profilePhoto"></div>
+                        <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                        <button class="btn-upload" onclick="document.getElementById('photoInput').click()"> Upload Photo</button>
+                        <button class="btn-upload" onclick="removeLawyerPhoto()" style="background:linear-gradient(135deg, #999 0%, #777 100%);margin-top:5px;"> Remove Photo</button>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" id="firstName">
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" id="lastName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="email" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Law Firm</label>
+                            <input type="text" id="lawFirm">
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                            <div class="form-group">
+                                <label>Bar Registration No</label>
+                                <input type="text" id="barReg">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="text" id="phone">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label> Biography</label>
+                    <textarea id="biography" placeholder="Tell clients about your experience and expertise..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label> Education & Qualifications</label>
+                    <textarea id="education" placeholder="List your degrees, certifications, and qualifications..."></textarea>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div class="card">
+                    <h3> Practice Areas</h3>
+                    <div class="practice-tags" id="practiceAreas"></div>
+                    <button class="btn-add" onclick="addPracticeArea()"> Add Practice Area</button>
+                </div>
+
+                <div class="card">
+                    <h3> Consultation Details</h3>
+                    <div class="form-group">
+                        <label> Consultation Fee (PKR)</label>
+                        <input type="number" id="consultationFee" placeholder="5000">
+                    </div>
+                    <div class="form-group">
+                        <label> Consultation Type</label>
+                        <select id="consultationType">
+                            <option value="in-person"> In-Person</option>
+                            <option value="online"> Online</option>
+                            <option value="both"> Both</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-upload" onclick="saveProfile()" style="width:100%;"> Save All Changes</button>
+        </div>
+
+        <div class="right-column">
+            <div class="card">
+                <h3> My Clients</h3>
+                <div id="clientsList">Loading...</div>
+            </div>
+            
+            <div class="card">
+                <h3> Upcoming Meetings</h3>
+                <div id="meetingsList">Loading...</div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        let currentUser = null;
+        let currentProfile = null;
+        let lawyerProfile = null;
+
+        async function init() {
+            currentUser = await window.SupabaseClient.getCurrentUser();
+            if (!currentUser) {
+                goToLogin();
+                return;
+            }
+            
+            await loadProfile();
+            await loadClients();
+            await loadMeetings();
+        }
+
+        async function loadProfile() {
+            currentProfile = await window.SupabaseClient.getUserProfile(currentUser.id);
+            lawyerProfile = await window.SupabaseClient.getLawyerProfile(currentUser.id);
+            
+            if (currentProfile) {
+                document.getElementById('firstName').value = currentProfile.first_name || '';
+                document.getElementById('lastName').value = currentProfile.last_name || '';
+                document.getElementById('email').value = currentProfile.email || '';
+                document.getElementById('phone').value = currentProfile.phone_number || '';
+                
+                if (currentProfile.profile_photo_url) {
+                    document.getElementById('profilePhoto').innerHTML = 
+                        `<img src="${currentProfile.profile_photo_url}">`;
+                }
+            }
+            
+            if (lawyerProfile) {
+                document.getElementById('lawFirm').value = lawyerProfile.law_firm || '';
+                document.getElementById('barReg').value = lawyerProfile.bar_registration_no || '';
+                document.getElementById('biography').value = lawyerProfile.biography || '';
+                document.getElementById('education').value = lawyerProfile.education_qualifications || '';
+                document.getElementById('consultationFee').value = lawyerProfile.consultation_fee || '';
+                document.getElementById('consultationType').value = lawyerProfile.consultation_type || 'both';
+            }
+            
+            loadPracticeAreas();
+        }
+
+        async function loadPracticeAreas() {
+            const container = document.getElementById('practiceAreas');
+            const result = await window.Search.getPracticeAreas();
+            
+            if (result.data && result.data.length > 0) {
+                container.innerHTML = result.data.slice(0, 3).map(area => 
+                    `<div class="tag">${area.name}</div>`
+                ).join('');
+            }
+        }
+
+        async function loadClients() {
+            const container = document.getElementById('clientsList');
+            
+            // Get all appointments where this lawyer is assigned
+            const { data: appointments, error } = await window.SupabaseClient.supabase
+                .from('appointments')
+                .select(`
+                    id,
+                    client_id,
+                    appointment_date,
+                    users!appointments_client_id_fkey(
+                        id,
+                        first_name,
+                        last_name,
+                        email,
+                        profile_photo_url
+                    )
+                `)
+                .eq('lawyer_id', currentUser.id)
+                .order('appointment_date', { ascending: false });
+            
+            if (error || !appointments || appointments.length === 0) {
+                container.innerHTML = '<div class="empty-state"> No clients yet</div>';
+                return;
+            }
+            
+            // Get unique clients
+            const uniqueClients = [];
+            const clientIds = new Set();
+            
+            appointments.forEach(apt => {
+                if (!clientIds.has(apt.client_id)) {
+                    clientIds.add(apt.client_id);
+                    uniqueClients.push({
+                        ...apt.users,
+                        lastAppointment: apt.appointment_date
+                    });
+                }
+            });
+            
+            container.innerHTML = uniqueClients.map(client => `
+                <div class="client-item">
+                    <div class="client-avatar">
+                        ${client.profile_photo_url 
+                            ? `<img src="${client.profile_photo_url}">` 
+                            : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#ccc;"></div>'}
+                    </div>
+                    <div class="client-info">
+                        <h4>${client.first_name} ${client.last_name}</h4>
+                        <p> ${client.email}</p>
+                    </div>
+                    <button class="btn-view-docs" onclick="viewClientDocuments('${client.id}', '${client.first_name} ${client.last_name}')"> View Docs</button>
+                </div>
+            `).join('');
+        }
+
+        async function viewClientDocuments(clientId, clientName) {
+            // Get client's documents
+            const result = await window.Search.getUserDocuments(clientId);
+            
+            if (!result.success || !result.data || result.data.length === 0) {
+                alert(` ${clientName} has not uploaded any documents yet.`);
+                return;
+            }
+            
+            // Create modal to show documents
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:1000;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'background:white;padding:40px;border-radius:16px;max-width:700px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.3);';
+            
+            modalContent.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;">
+                    <h3 style="font-size:24px;color:#2c2c2c;"> ${clientName}'s Documents</h3>
+                    <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;font-size:32px;cursor:pointer;color:#666;">&times;</button>
+                </div>
+                ${result.data.map(doc => `
+                    <div style="border:2px solid #f0f0f0;padding:20px;border-radius:12px;margin-bottom:15px;transition:all 0.3s ease;background:linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);" 
+                         onmouseover="this.style.borderColor='#7a1a31';this.style.transform='translateX(5px)'" 
+                         onmouseout="this.style.borderColor='#f0f0f0';this.style.transform='translateX(0)'">
+                        <h4 style="font-size:16px;margin-bottom:10px;color:#2c2c2c;font-weight:600;"> ${doc.document_name}</h4>
+                        <p style="font-size:13px;color:#666;margin-bottom:15px;"> Uploaded: ${new Date(doc.uploaded_at).toLocaleDateString()}</p>
+                        <button onclick="window.open('${doc.file_url}')" style="padding:10px 20px;border:2px solid #7a1a31;background:#7a1a31;color:white;border-radius:8px;cursor:pointer;font-weight:600;transition:all 0.3s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(122,26,49,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'"> View Document</button>
+                    </div>
+                `).join('')}
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        async function loadMeetings() {
+            const result = await window.Search.getUserAppointments(currentUser.id);
+            const container = document.getElementById('meetingsList');
+            
+            if (!result.data || result.data.length === 0) {
+                container.innerHTML = '<div class="empty-state"> No upcoming meetings</div>';
+                return;
+            }
+            
+            container.innerHTML = result.data.map(apt => `
+                <div class="meeting-item">
+                    <div style="flex:1;">
+                        <div style="font-weight:600;font-size:15px;color:#2c2c2c;margin-bottom:5px;"> ${new Date(apt.appointment_date).toLocaleDateString()}</div>
+                        <div style="font-size:13px;color:#666;"> ${apt.appointment_time}</div>
+                        <div style="font-size:13px;color:#666;"> ${apt.title}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addPracticeArea() {
+            const area = prompt('Enter practice area:');
+            if (area) {
+                alert(' Practice area: ' + area + ' will be added');
+            }
+        }
+
+        async function saveProfile() {
+            await window.Auth.updateProfile(currentUser.id, {
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                phone_number: document.getElementById('phone').value
+            });
+            
+            await window.Auth.updateLawyerProfile(currentUser.id, {
+                law_firm: document.getElementById('lawFirm').value,
+                bar_registration_no: document.getElementById('barReg').value,
+                biography: document.getElementById('biography').value,
+                education_qualifications: document.getElementById('education').value,
+                consultation_fee: parseFloat(document.getElementById('consultationFee').value),
+                consultation_type: document.getElementById('consultationType').value
+            });
+            
+            alert(' Profile saved successfully!');
+        }
+
+        async function removeLawyerPhoto() {
+            if (confirm('Remove profile photo? This will permanently delete the photo from storage.')) {
+                const result = await window.Auth.removeProfilePhoto(currentUser.id);
+                if (result.success) {
+                    alert(' Photo removed successfully');
+                    location.reload();
+                } else {
+                    alert(' Failed to remove photo: ' + result.error);
+                }
+            }
+        }
+
+        init();
+        
+        document.getElementById('photoInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            
+            if (file) {
+                const result = await window.Auth.updateProfilePhoto(currentUser.id, file);
+                
+                if (result.success) {
+                    alert(' Photo updated!');
+                    location.reload();
+                } else {
+                    alert(' Upload failed: ' + (result.error || 'Unknown error'));
+                }
+            }
+        });
+    </script>
+</body>
+</html>

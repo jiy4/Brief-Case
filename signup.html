@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - BRIEF-CASE</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #3a3d4a 0%, #2c2f38 50%, #3a3d4a 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated background elements */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(122, 26, 49, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      top: -300px;
+      right: -300px;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    body::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(122, 26, 49, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      bottom: -250px;
+      left: -250px;
+      animation: float 15s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, 30px) scale(1.1); }
+    }
+
+    .signup-container {
+      background: white;
+      max-width: 550px;
+      width: 100%;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+      padding: 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: #7a1a31;
+      flex-shrink: 0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.9);
+      font-style: italic;
+    }
+
+    .signup-form {
+      padding: 40px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .signup-form::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .signup-form::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .signup-form::-webkit-scrollbar-thumb {
+      background: #7a1a31;
+      border-radius: 10px;
+    }
+
+    .signup-form h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2c2c2c;
+      margin-bottom: 10px;
+    }
+
+    .signup-subtitle {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #3a3d4a;
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      pointer-events: none;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="password"] {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 14px;
+      background: white;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #7a1a31;
+      box-shadow: 0 0 0 3px rgba(122, 26, 49, 0.1);
+    }
+
+    .form-group input::placeholder {
+      color: #aaa;
+    }
+
+    .password-requirements {
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    .password-requirements ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .password-requirements li {
+      padding: 3px 0;
+      transition: all 0.3s;
+    }
+
+    .password-requirements li::before {
+      content: '•';
+      margin-right: 8px;
+    }
+
+    .password-requirements li.valid {
+      color: #2e7d32;
+      font-weight: 600;
+    }
+
+    .password-requirements li.valid::before {
+      content: '✓';
+    }
+
+    .password-requirements li.invalid {
+      color: #999;
+    }
+
+    .account-type {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .type-btn {
+      border: 2px solid #e0e0e0;
+      background: white;
+      color: #666;
+      font-weight: 600;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 10px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .type-btn:hover {
+      border-color: #7a1a31;
+      background: rgba(122, 26, 49, 0.05);
+    }
+
+    .type-btn.active {
+      background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+      color: white;
+      border-color: #7a1a31;
+      box-shadow: 0 4px 12px rgba(122, 26, 49, 0.3);
+    }
+
+    .photo-upload-section {
+      text-align: center;
+      padding: 25px;
+      border: 2px dashed #e0e0e0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+
+    .photo-upload-section:hover {
+      border-color: #7a1a31;
+      background: rgba(122, 26, 49, 0.05);
+    }
+
+    .photo-preview {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      border: 3px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+
+    .photo-upload-section:hover .photo-preview {
+      border-color: #7a1a31;
+      transform: scale(1.05);
+    }
+
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .upload-text {
+      font-size: 13px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .signup-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #7a1a31 0%, #5d1425 100%);
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 25px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(122, 26, 49, 0.3);
+      letter-spacing: 0.5px;
+    }
+
+    .signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(122, 26, 49, 0.4);
+    }
+
+    .signup-btn:active {
+      transform: translateY(0);
+    }
+
+    .signup-btn:disabled {
+      background: linear-gradient(135deg, #999 0%, #777 100%);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .login-text {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+      padding-bottom: 10px;
+    }
+
+    .login-text a {
+      color: #7a1a31;
+      text-decoration: none;
+      font-weight: 700;
+      margin-left: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .login-text a:hover {
+      color: #5d1425;
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: #d32f2f;
+      font-size: 12px;
+      margin-top: 6px;
+      display: none;
+      font-weight: 500;
+    }
+
+    .success-message {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      color: #2e7d32;
+      font-size: 14px;
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 12px;
+      display: none;
+      text-align: center;
+      border: 2px solid #4caf50;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .success-message a {
+      color: #7a1a31;
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .success-message a:hover {
+      color: #5d1425;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      .signup-form {
+        padding: 30px 25px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .signup-form h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <div class="header">
+      
+      <div class="brand">
+        <h1>BRIEF-CASE</h1>
+        <p>Your Case, Our Counsel</p>
+      </div>
+    </div>
+
+    <div class="signup-form">
+      <h2>Create Account</h2>
+      <p class="signup-subtitle">Join our legal services platform today</p>
+
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="fullname">Full Name</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <input type="text" id="fullname" placeholder="John Doe" required>
+          </div>
+          <div class="error-message" id="fullnameError"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <input type="email" id="email" placeholder="you@example.com" required>
+            </div>
+            <div class="error-message" id="emailError"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="cnic">CNIC</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+              <input type="text" id="cnic" placeholder="XXXXX-XXXXXXX-X" required>
+            </div>
+            <div class="error-message" id="cnicError"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input type="password" id="password" placeholder="Create strong password" required>
+          </div>
+          <div class="password-requirements" id="passwordReqs">
+            <ul>
+              <li id="req-length" class="invalid">At least 8 characters</li>
+              <li id="req-uppercase" class="invalid">One uppercase letter</li>
+              <li id="req-lowercase" class="invalid">One lowercase letter</li>
+              <li id="req-number" class="invalid">One number</li>
+            </ul>
+          </div>
+          <div class="error-message" id="passwordError"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input type="password" id="confirm-password" placeholder="Re-enter password" required>
+          </div>
+          <div class="error-message" id="confirmPasswordError"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Account Type</label>
+          <div class="account-type">
+            <button type="button" class="type-btn" id="clientBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Client
+            </button>
+            <button type="button" class="type-btn" id="lawyerBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+              Lawyer
+            </button>
+          </div>
+          <input type="hidden" name="accountType" id="accountType" value="">
+          <div class="error-message" id="accountTypeError"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Profile Photo (Optional)</label>
+          <div class="photo-upload-section" onclick="document.getElementById('photoInput').click()">
+            <div class="photo-preview" id="photoPreview">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </div>
+            <p class="upload-text">Click to upload profile photo</p>
+            <input type="file" id="photoInput" accept="image/*" style="display: none;">
+          </div>
+        </div>
+
+        <button type="submit" class="signup-btn" id="signupBtn">Create Account</button>
+        <div class="success-message" id="successMessage"></div>
+
+        <div class="login-text">
+          Already have an account?
+          <a onclick="goToLogin()">Sign In</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script src="js/supabase-client.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  let selectedPhoto = null;
+  let currentEmail = null;
+
+  // Password validation in real-time
+  document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+    
+    // Check length
+    const reqLength = document.getElementById('req-length');
+    if (password.length >= 8) {
+      reqLength.classList.remove('invalid');
+      reqLength.classList.add('valid');
+    } else {
+      reqLength.classList.remove('valid');
+      reqLength.classList.add('invalid');
+    }
+    
+    // Check uppercase
+    const reqUppercase = document.getElementById('req-uppercase');
+    if (/[A-Z]/.test(password)) {
+      reqUppercase.classList.remove('invalid');
+      reqUppercase.classList.add('valid');
+    } else {
+      reqUppercase.classList.remove('valid');
+      reqUppercase.classList.add('invalid');
+    }
+    
+    // Check lowercase
+    const reqLowercase = document.getElementById('req-lowercase');
+    if (/[a-z]/.test(password)) {
+      reqLowercase.classList.remove('invalid');
+      reqLowercase.classList.add('valid');
+    } else {
+      reqLowercase.classList.remove('valid');
+      reqLowercase.classList.add('invalid');
+    }
+    
+    // Check number
+    const reqNumber = document.getElementById('req-number');
+    if (/[0-9]/.test(password)) {
+      reqNumber.classList.remove('invalid');
+      reqNumber.classList.add('valid');
+    } else {
+      reqNumber.classList.remove('valid');
+      reqNumber.classList.add('invalid');
+    }
+  });
+
+  // Validate password strength
+  function isPasswordStrong(password) {
+    return password.length >= 8 &&
+           /[A-Z]/.test(password) &&
+           /[a-z]/.test(password) &&
+           /[0-9]/.test(password);
+  }
+
+  // Account type selection
+  const clientBtn = document.getElementById('clientBtn');
+  const lawyerBtn = document.getElementById('lawyerBtn');
+  const accountTypeInput = document.getElementById('accountType');
+
+  clientBtn.addEventListener('click', () => {
+    clientBtn.classList.add('active');
+    lawyerBtn.classList.remove('active');
+    accountTypeInput.value = 'client';
+  });
+
+  lawyerBtn.addEventListener('click', () => {
+    lawyerBtn.classList.add('active');
+    clientBtn.classList.remove('active');
+    accountTypeInput.value = 'lawyer';
+  });
+
+  // Photo upload handling
+  document.getElementById('photoInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      selectedPhoto = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('photoPreview').innerHTML = 
+          `<img src="${e.target.result}" alt="Profile">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Form submission
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Clear all previous errors
+    document.querySelectorAll('.error-message').forEach(el => {
+      el.style.display = 'none';
+      el.textContent = '';
+    });
+    
+    // Get form values
+    const fullname = document.getElementById('fullname').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const accountType = document.getElementById('accountType').value;
+    const cnic = document.getElementById('cnic').value.trim();
+    
+    // Validation
+    let hasError = false;
+    
+    if (!fullname || fullname.split(' ').length < 2) {
+      showError('fullnameError', 'Please enter your full name (first and last)');
+      hasError = true;
+    }
+    
+    if (!email || !window.SupabaseClient.isValidEmail(email)) {
+      showError('emailError', 'Please enter a valid email');
+      hasError = true;
+    }
+    
+    if (!isPasswordStrong(password)) {
+      showError('passwordError', 'Password must meet all requirements');
+      hasError = true;
+    }
+    
+    if (password !== confirmPassword) {
+      showError('confirmPasswordError', 'Passwords do not match');
+      hasError = true;
+    }
+    
+    if (!accountType) {
+      showError('accountTypeError', 'Please select an account type');
+      hasError = true;
+    }
+    
+    if (!cnic || !/^\d{5}-\d{7}-\d{1}$/.test(cnic)) {
+      showError('cnicError', 'Invalid CNIC format (XXXXX-XXXXXXX-X)');
+      hasError = true;
+    }
+    
+    if (hasError) return;
+    
+    // Disable submit button
+    const signupBtn = document.getElementById('signupBtn');
+    signupBtn.disabled = true;
+    signupBtn.innerHTML = '<span class="loading-spinner"></span>Creating Account...';
+    
+    // Parse name
+    const nameParts = fullname.split(' ');
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(' ');
+    
+    // Sign up
+    const result = await window.Auth.signUpWithVerification({
+      email,
+      password,
+      firstName,
+      lastName,
+      accountType,
+      cnic,
+      photo: selectedPhoto
+    });
+    
+    if (result.success) {
+      if (result.needsConfirmation) {
+        currentEmail = email;
+        showSuccess('Account created! Please check your email to verify your account before logging in.');
+      } else {
+        window.location.href = 'home.html';
+      }
+    } else {
+      showError('emailError', result.error || 'Signup failed');
+      signupBtn.disabled = false;
+      signupBtn.textContent = 'Create Account';
+    }
+  });
+
+  function showError(elementId, message) {
+    const errorEl = document.getElementById(elementId);
+    errorEl.textContent = message;
+    errorEl.style.display = 'block';
+  }
+
+  function showSuccess(message) {
+    const successMessage = document.getElementById('successMessage');
+    successMessage.innerHTML = message + 
+      ' <br><br>Didn\'t receive the email? <a onclick="resendVerification()">Resend verification email</a>';
+    successMessage.style.display = 'block';
+    document.getElementById('signupBtn').disabled = false;
+    document.getElementById('signupBtn').textContent = 'Create Account';
+  }
+
+  async function resendVerification() {
+    if (!currentEmail) {
+      alert('No email found. Please try signing up again.');
+      return;
+    }
+    
+    const result = await window.Auth.resendVerificationEmail(currentEmail);
+    if (result.success) {
+      alert('Verification email sent! Please check your inbox.');
+    } else {
+      alert('Failed to resend: ' + result.error);
+    }
+  }
+
+  function goToLogin() {
+    window.location.href = 'login.html';
+  }
+
+  // Check if already logged in
+  async function checkAuth() {
+    const isLoggedIn = await window.SupabaseClient.isAuthenticated();
+    if (isLoggedIn) {
+      window.location.href = 'home.html';
+    }
+  }
+
+  checkAuth();
+</script>
+</body>
+</html>
